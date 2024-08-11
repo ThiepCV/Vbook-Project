@@ -50,17 +50,17 @@ class Like(models.Model):
         (DISLIKE, 'Dislike'),
     ]
 
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='likes')
+    PostId = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes',db_column='PostId')
+    UserId = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='likes',db_column='UserId')
     created_at = models.DateTimeField(auto_now_add=True)
     like_type = models.CharField(max_length=10, choices=LIKE_TYPE_CHOICES)
 
     class Meta:
         db_table = "likes"
-        unique_together = ('post', 'user', 'like_type')
+        unique_together = ('PostId', 'UserId', 'like_type')
 
     def __str__(self):
-        return f"{self.like_type} by {self.user.username} on post {self.post.PostId}"
+        return f"{self.like_type} by {self.UserId.username} on post {self.PostId.PostId}"
 
 class Follow(models.Model):
     FollowId = models.AutoField(primary_key=True)
