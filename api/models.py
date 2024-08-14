@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.hashers import check_password, make_password
 class Users(models.Model):
     UserId = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255, unique=True)
@@ -8,7 +8,13 @@ class Users(models.Model):
     profile_picture = models.URLField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     personal_link = models.URLField(blank=True, null=True)
-
+    def save(self, *args, **kwargs):
+        if not self.pk or 'password' in kwargs:  #  mã hóa khi tạo mới hoặc thay đổi mật khẩu
+            self.password = make_password(self.password)
+            super().save(*args, **kwargs)
+    def check_password(self, raw_password):
+        print('okk',self, raw_password)
+        return check_password(raw_password, self.password)
     class Meta:
         db_table = "users"
 
