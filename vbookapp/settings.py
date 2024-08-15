@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
 
 
 from datetime import timedelta
-
+AUTH_USER_MODEL = 'api.Users'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -152,6 +152,10 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'UserId',
+    'USER_ID_CLAIM': 'user_id',
 }
+
 
