@@ -23,8 +23,10 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
+        
+            print(serializer)
             serializer.save()
-            return Response({"mメッセージ": "ログイン が出来ました。"}, status=status.HTTP_201_CREATED)
+            return Response({"メッセージ": "登録 が出来ました。"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(APIView):
     permission_classes = [AllowAny]

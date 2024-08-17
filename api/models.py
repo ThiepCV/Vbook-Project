@@ -28,7 +28,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    
+    birthday = models.DateField(null=False, blank=True,default='2000-01-01')
+    fullName = models.CharField(max_length=255, null=False)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_user_set',
