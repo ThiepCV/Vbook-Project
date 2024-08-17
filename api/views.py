@@ -24,7 +24,7 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
+            return Response({"mメッセージ": "ログイン が出来ました。"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -46,7 +46,7 @@ class UserProfileAPIView(APIView):
         try:
             user = Users.objects.get(UserId=UserId)
         except Users.DoesNotExist:
-            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'エラー': 'ユーザーが存在していません。'}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -54,7 +54,7 @@ class UserProfileAPIView(APIView):
         try:
             user = Users.objects.get(UserId=UserId)
         except Users.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"エラー': 'ユーザーが存在していません。"}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ProfileSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
@@ -68,7 +68,7 @@ class UserProfileUpdateAPIView(APIView):
         try:
             user = Users.objects.get(UserId=UserId)
         except Users.DoesNotExist:
-            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'エラー': 'ユーザーが存在していません。'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
