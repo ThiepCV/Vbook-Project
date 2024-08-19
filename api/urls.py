@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, CreateUser, PostViewSet, LikeViewSet, CommentViewSet, FollowViewSet
 from .views import CreatePostView
 from .views import UpdatePostView
+from .views import DeletePostView
 urlpatterns = [
     path('users/', UserViewSet.as_view(), name="userlist"),
     path('createuser/', CreateUser.as_view(), name="create"),
@@ -14,4 +15,3 @@ urlpatterns = [
     path('update-post/', UpdatePostView.as_view(), name='update-post'),
     path('delete-post/', DeletePostView.as_view(), name='delete-post'),
 ]
-
