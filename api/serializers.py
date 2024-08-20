@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Users, Post, Comment, Like, Follow
+from .models import Users, Post, Comment, Like, Follow 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
+from rest_framework import serializers
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,3 +77,19 @@ class UpdatePostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['PostId', 'content']
 
+
+## follow API
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['FollowId', 'follower', 'followed', 'created_at']
+
+class FollowerListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['UserId', 'username']
+
+class FollowingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['UserId', 'username']

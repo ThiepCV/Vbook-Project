@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import mixins
 from .models import Users, Post, Like, Comment,Follow
-from .serializers import UserSerializer, PostSerializer, LikeSerializer, CommentSerializer, FollowSerializer, ProfileSerializer,RegisterSerializer, LoginSerializer
+from .serializers import UserSerializer, PostSerializer, LikeSerializer, CommentSerializer, FollowSerializer, ProfileSerializer,RegisterSerializer, LoginSerializer,FollowSerializer, FollowerListSerializer, FollowingListSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -209,6 +209,56 @@ class DeletePostView(APIView):
         post.delete()
         return Response(
             {"Massage":"ポストが正常に削除されました。"},
-            status=status.HTTP_200_OK 
-        )
-    
+            status=status.HTTP_200_OK )
+## Create API follow
+class FollowUserAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        follower_id = request.data.get('follower_id')
+        followed_id = request.data.get('followed_id')
+        if not follower_id or not followed_id:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "invalid_data",
+                    "error_message": "follower_id と followed_id は必須です。"
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            follower = Users.objects.get(UserId=follower_id)
+            followed = Users.objects.get(UserId=followed_id)
+        except Users.DoesNotExist:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "user_not_found",
+                    "error_message": "指定されたユーザーが存在しません。"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        follow, created = Follow.objects.get_or_create(
+            follower=follower,
+            followed=followed)
+        if created:
+            serializer = FollowSerializer(follow)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "already_following",
+                    "error_message": "このユーザーはすでにフォローしています。"
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+class FollowerListAPIView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        user = get_object_or_404(Users, UserId=user_id)
+        followers = user.followers.all()
+        serializer = FollowerListSerializer(followers, many=True)
+        return Response({'followers': serializer.data}, status=status.HTTP_200_OK)
+
+class FollowingListAPIView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        user = get_object_or_404(Users, UserId=user_id)
+        following = user.following.all()
+        serializer = FollowingListSerializer(following, many=True)
+        return Response({'following': serializer.data}, status=status.HTTP_200_OK)
