@@ -29,7 +29,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     birthday = models.DateField(null=False, blank=True,default='2000-01-01')
-    fullName = models.CharField(max_length=255, null=False)
+    fullName = models.CharField(max_length=255)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_user_set',
@@ -111,3 +111,18 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.follower.username} follows {self.followed.username}"
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='sent_notifications', null=True, blank=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'notifications'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification from {self.sender.username if self.sender else 'System'} to {self.recipient.username}"
+
