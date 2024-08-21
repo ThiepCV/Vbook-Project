@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 // import {useNavigate} from 'react-router-dom';
-import axiosIntance from '../api/axiosInstance';
+import axiosIntance from '../../../api/axiosInstance';
 
 const Login =() => {
     const [email, setEmail] = useState ('');
