@@ -1,0 +1,79 @@
+@use "sass:map";
+@import "theme";
+
+html,body{
+    margin: 0;
+}
+ul {
+    list-style: none;
+    }
+li {
+        margin: 10px 0 10px 0; /* Khoảng cách giữa các mục */
+    }
+.container{
+    max-width: 1170px;
+    width: 100%;
+    margin: 0 auto;
+}
+.layout{
+    width: 100%;
+    height: 1000px;
+    display: flex;
+    align-items: stretch;
+	justify-content: space-around;
+}
+// NAV MENU RIGHT
+.Navright{
+    width: 22%;
+    height: 100%;
+    background-color: antiquewhite;
+}
+.navigation button {
+    background: none; /* Xóa nền của nút */
+    border: none;     /* Loại bỏ viền của nút */
+    padding: 0;       /* Loại bỏ padding để hình ảnh biểu tượng không bị dịch chuyển */
+    cursor: pointer;  /* Thay đổi con trỏ chuột khi di chuột qua nút */
+    outline: none;    /* Loại bỏ viền khi nút được nhấn (nếu có) */
+  }
+  
+  .navigation button:focus {
+    outline: none;    /* Đảm bảo không có viền khi nút được focus */
+  }
+  
+  .navigation .icon {
+    font-size: 50px; /* Điều chỉnh kích thước biểu tượng nếu cần */
+  }
+  
+.nav_logo{
+    width: 50%;
+    height: 100px;
+    // background-color: aquamarine;
+    margin-bottom: 50px;
+    margin-left: 10px;
+    margin-top: -20px;
+}
+.notepad{
+    width: 90%;
+    height: 300px;
+    background-color: brown;
+    margin: 0 auto;
+    margin-bottom: 200px;
+    border-radius: 20px;
+    // background-image: ;
+}
+.navigation{
+background-color: black;
+height: 300px;
+}
+
+.Navleft{
+    width: 22%;
+    background-color: red;
+}
+.children{
+    width: 50%;
+    background-color: aquamarine;
+}
+.layout-right{
+
+}
