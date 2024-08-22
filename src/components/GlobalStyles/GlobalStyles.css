@@ -1,0 +1,19 @@
+@import 'normalize.css';
+
+:root{
+    --primary: #0d0b0c;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-size: 62.5%;
+}
+body{
+    font-family: "Noto Sans JP";
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+}
