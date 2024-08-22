@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 // import {useNavigate} from 'react-router-dom';
 import axiosIntance from '../../api/axiosInstance';
+import "../Login/login.css"
 
 const Login =() => {
     const [email, setEmail] = useState ('');
@@ -26,38 +27,39 @@ const Login =() => {
        }
     }
     return (
-        <div>
-            <div>
+        <div className='login'>
+            <div className='logo_img'>
                 <img src='./images/logo.svg' alt=''/>
             </div>
-            <div>
+            <div className='login-form'>
                 <form onSubmit={handleLoginSubmit}>
-                    <input
+                    <div className='login_input'><input
                         type='email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder='メールアドレス'
                         required
-                    />
-                    <input
+                    /></div>
+                    <div className='login_input'><input
                         type='password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder='パスワード'
                         required
-                    />
-                    <p>パスワードが忘れてしましたの方</p>
-                    <button type='submit'>Login</button>
+                    /></div>
+                    <div className='login_input'><p>パスワードが忘れてしましたの方</p></div>
+                    <div className='login_input'><button type='submit'>Login</button></div>
                     {error && <p>{error}</p>}
                 </form>
-            </div>
-            <div>
+                <div className='login_input'>
                 <img src='' alt=''/>
                 <p>login with google</p>
             </div>
-            <div>
+            <div className='login_input'>
                 <button>新規登録</button>
             </div>
+            </div>
+            
             <div>
                 <img src='' alt=''/>
                 <img />
