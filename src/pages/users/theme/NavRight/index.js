@@ -21,31 +21,37 @@ const Navright = () => (
     <div className="notepad">
     </div>
     <div className="navigation">
-    <ul>
+    <ul id='main-menu'>
     <li>
           <button onClick={() => handleButtonClick('/home')}>
-            <FontAwesomeIcon icon={faHouse} style={{ color: "#f5a01a", }} />
+            <FontAwesomeIcon icon={faHouse}/>
           </button>
         </li>
         <li>
           <button onClick={() => handleButtonClick('/search')}>
-            <FontAwesomeIcon icon={faSearch} style={{ color: "#f5a01a" }} />
+            <FontAwesomeIcon icon={faSearch} />
           </button>
         </li>
         <li>
           <button onClick={() => handleButtonClick('/heart')}>
-            <FontAwesomeIcon icon={faHeart} style={{ color: "#f5a01a" }} />
+            <FontAwesomeIcon icon={faHeart}/>
           </button>
         </li>
         <li>
           <button onClick={() => handleButtonClick('/user')}>
-            <FontAwesomeIcon icon={faUser} style={{ color: "#f5a01a" }} />
+            <FontAwesomeIcon icon={faUser}/>
           </button>
         </li>
         <li>
           <button onClick={() => handleButtonClick('/menu')}>
-            <FontAwesomeIcon icon={faBars} style={{ color: "#f5a01a" }} />
+            <FontAwesomeIcon icon={faBars}/>
           </button>
+          <ul className="sub-menu">
+            <li>DISPLAY</li>
+            <li>SETTING</li>
+            <li>REPORT AN ISSUE</li>
+            <li>LOGIN/LOGOUT</li>
+        </ul>
         </li>
       </ul>
     </div>

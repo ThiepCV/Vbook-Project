@@ -6,27 +6,28 @@ html,body{
 }
 ul {
     list-style: none;
+    text-decoration: none;
     }
 li {
-        margin: 10px 0 10px 0; /* Khoảng cách giữa các mục */
+    margin: 10px 0 10px 0; /* Khoảng cách giữa các mục */
+    text-decoration: none;
     }
-.container{
-    max-width: 1170px;
-    width: 100%;
-    margin: 0 auto;
-}
+a{text-decoration: none}
 .layout{
     width: 100%;
     height: 1000px;
     display: flex;
-    align-items: stretch;
-	justify-content: space-around;
 }
 // NAV MENU RIGHT
 .Navright{
     width: 22%;
     height: 100%;
-    background-color: antiquewhite;
+    background-color: #CCDFF0;
+    position: fixed;
+    left: 0;
+}
+.navigation{
+    margin-left: -20px;
 }
 .navigation button {
     background: none; /* Xóa nền của nút */
@@ -34,16 +35,52 @@ li {
     padding: 0;       /* Loại bỏ padding để hình ảnh biểu tượng không bị dịch chuyển */
     cursor: pointer;  /* Thay đổi con trỏ chuột khi di chuột qua nút */
     outline: none;    /* Loại bỏ viền khi nút được nhấn (nếu có) */
+    color: #000000
   }
   
   .navigation button:focus {
     outline: none;    /* Đảm bảo không có viền khi nút được focus */
   }
-  
-  .navigation .icon {
-    font-size: 50px; /* Điều chỉnh kích thước biểu tượng nếu cần */
+  .navigation button:hover{
+    color: #f5a01a
   }
   
+  .navigation button {
+    font-size: 22px; /* Điều chỉnh kích thước biểu tượng nếu cần */
+  }
+
+ul#main-menu .sub-menu{
+    display: none;
+    color:#000000
+}
+ul#main-menu li:hover .sub-menu{
+    display: block;
+    text-decoration: none;
+    color: #f5a01a;
+    
+}
+.sub-menu{
+    background-color: aliceblue;
+    border-radius: 20px;
+    width: 50%;
+    position: absolute;
+    left: 70px;
+    bottom: 5px;
+    z-index: 3;
+    text-align: center;
+}
+.sub-menu li{
+    font-size: 12px;
+    margin-right: 50px;
+}
+.sub-menu a{
+    color: #000;
+    font-weight: bold;
+}
+.sub-menu a:hover{
+    color: #f5a01a;
+}
+
 .nav_logo{
     width: 50%;
     height: 100px;
@@ -55,25 +92,106 @@ li {
 .notepad{
     width: 90%;
     height: 300px;
-    background-color: brown;
+    background-color: rgb(255, 255, 255);
     margin: 0 auto;
-    margin-bottom: 200px;
+    margin-bottom: 170px;
     border-radius: 20px;
     // background-image: ;
 }
 .navigation{
-background-color: black;
+
 height: 300px;
 }
 
+
+//NAV MENU LEFT
 .Navleft{
     width: 22%;
-    background-color: red;
+    height: 100%;
+    background-color: #CCDFF0;
+    position: fixed;
+    right: 0;
 }
-.children{
-    width: 50%;
-    background-color: aquamarine;
+.calendar-grid{
+    width: 90%;
+    height: 200px;
+    background-color: #ffffff;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 20px;
 }
-.layout-right{
+.search-list{
+    margin: 0 auto;
+    width: 90%;
+    height:500px;
+    background-color: #ffffff;
+    margin-top: 30px;
+    border-radius: 20px 20px 0 0 ;
 
 }
+.search{
+    background-color: aqua;
+    height: 50px;
+    border-radius: 20px 20px 0 0 ;
+    text-align: center;
+}
+.input_search{
+    background-color: white;
+    background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fsearch%3Fq%3Dsearch%2BIcon&psig=AOvVaw1guSehLEhhoXLaiF253pUe&ust=1724317246790000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNCIlb3chYgDFQAAAAAdAAAAABAE');
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    margin-top: 15px;
+    width: 80%;
+    border-radius: 20px;
+}
+
+
+
+
+.children{
+    width: 45%;
+    background-color: #CCDFF0;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.navigation_left button {
+    background: none; /* Xóa nền của nút */
+    border: none;     /* Loại bỏ viền của nút */
+    padding: 0;       /* Loại bỏ padding để hình ảnh biểu tượng không bị dịch chuyển */
+    cursor: pointer;  /* Thay đổi con trỏ chuột khi di chuột qua nút */
+    outline: none;    /* Loại bỏ viền khi nút được nhấn (nếu có) */
+    color: #f5a01a;
+    position: fixed;
+    right: 12px;
+    bottom: 250px;
+
+    
+  }
+  
+  .navigation_left button:focus {
+    outline: none;    
+  }
+  .navigation_left button:hover{
+    color: #CCDFF0
+  }
+  
+  .navigation_left button {
+    font-size: 40px;
+  }
+
+
+
+//   .user-info{
+//     width: 90%;
+//     display: flex;
+//     background-color: black;
+
+// }
+// .avatar{
+//     width:40% ;
+// }
+// .user-details{
+//     width: 60%;
+// }
