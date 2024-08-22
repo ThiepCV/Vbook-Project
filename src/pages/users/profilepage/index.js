@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { memo } from 'react';
 import { fetchUserProfile, createPost } from '../../../api/axiosInstance';
-import './style.scss';
+import '../profilepage/style.scss';
 
 const ProfilePage = ({ userId }) => {
     const [user, setUser] = useState(null);
@@ -46,6 +46,12 @@ const ProfilePage = ({ userId }) => {
                     onChange={(e) => setStatus(e.target.value)}
                 ></textarea>
                 <div className="actions">
+                    <button onClick={handlePostSubmit}>
+                        <i className="fas fa-paper-plane"></i> like
+                    </button>
+                    <button onClick={handlePostSubmit}>
+                        <i className="fas fa-paper-plane"></i> comment
+                    </button>
                     <button onClick={handlePostSubmit}>
                         <i className="fas fa-paper-plane"></i> 投稿
                     </button>

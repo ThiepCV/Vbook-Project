@@ -23,11 +23,6 @@ axiosIntance.interceptors.request.use(config => {
 );
 export default axiosIntance;
 
-// Đăng nhập người dùng
-export const loginUser = (data) => {
-    return axios.post(`${API_URL}/login/`, data);
-};
-
 // Lấy thông tin hồ sơ người dùng
 export const fetchUserProfile = (userId) => {
     return axios.get(`${API_URL}/user/${userId}/`);
