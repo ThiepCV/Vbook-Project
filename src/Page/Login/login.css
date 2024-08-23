@@ -1,5 +1,6 @@
 .login{
     margin: 0 auto;
+    margin-top: 80px;
 }
 .logo_img{
     width: 20%;
@@ -77,3 +78,27 @@ button {
    button:active {
     transform: scale(0.9);
    }
+.login_gg{
+    width: 75%;
+    display: flex;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 70px;
+    background-color: #CCDFF0;
+    border-radius: 10px;
+}
+
+.gg_icon{
+    width: 20%;
+   
+}
+.gg_icon img{
+    width: 70%;
+    margin-left: 90px;
+    margin-top: 5px;
+}
+.login_gg p{
+    width: 80%;
+    margin-top: 20px;
+}

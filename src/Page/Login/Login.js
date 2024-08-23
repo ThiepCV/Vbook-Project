@@ -47,14 +47,18 @@ const Login =() => {
                         placeholder='パスワード'
                         required
                     /></div>
-                    <div className='login_input'><p>パスワードが忘れてしましたの方</p></div>
                     <div className='login_input'><button type='submit'>Login</button></div>
                     {error && <p>{error}</p>}
                 </form>
-                <div className='login_input'>
-                <img src='' alt=''/>
-                <p>login with google</p>
+                <div className='login_gg'>
+                    <div className='gg_icon' > 
+                    <img src='https://account.meta.vn/themes/default/images/gg.png' alt=''/> 
+                    </div>
+                
+                    <p>login with google</p>
             </div>
+            <div className='login_input'><p>パスワードが忘れてしましたの方</p></div>
+
             <div className='login_input'>
                 <button>新規登録</button>
             </div>
