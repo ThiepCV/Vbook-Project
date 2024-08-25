@@ -4,19 +4,19 @@ import { memo } from 'react';
 import { fetchUserProfile, createPost } from '../../../api/axiosInstance';
 import '../profilepage/style.scss';
 
-const ProfilePage = ({ userId }) => {
+const ProfilePage = ({ UserId }) => {
     const [user, setUser] = useState(null);
     const [status, setStatus] = useState('');
 
     useEffect(() => {
   
-        fetchUserProfile(userId)
+        fetchUserProfile(UserId)
             .then(response => setUser(response.data))
             .catch(error => console.error('ユーザープロフィールの取得中にエラーが発生しました:', error));
-    }, [userId]);
+    }, [UserId]);
 
     const handlePostSubmit = () => {
-        createPost({ user_id: userId, content: status })
+        createPost({ user_id: UserId, content: status })
             .then(response => {
                 console.log('投稿が作成されました:', response.data);
                 setStatus(''); 

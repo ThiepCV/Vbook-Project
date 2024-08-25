@@ -24,7 +24,7 @@ a{text-decoration: none}
     height: 100%;
     background-color: #CCDFF0;
     position: fixed;
-    left: 0;
+    right: 0;
 }
 .navigation{
     margin-left: -20px;
@@ -110,7 +110,7 @@ height: 300px;
     height: 100%;
     background-color: #CCDFF0;
     position: fixed;
-    right: 0;
+    left: 0;
 }
 .calendar-grid{
     width: 90%;
@@ -135,17 +135,41 @@ height: 300px;
     border-radius: 20px 20px 0 0 ;
     text-align: center;
 }
-.input_search{
-    background-color: white;
-    background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fsearch%3Fq%3Dsearch%2BIcon&psig=AOvVaw1guSehLEhhoXLaiF253pUe&ust=1724317246790000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNCIlb3chYgDFQAAAAAdAAAAABAE');
-    background-repeat: no-repeat;
+
+
+/* From Uiverse.io by OnCloud125252 */ 
+.inputBox_container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    max-width: 14em;
+    background-color: #ffffff;
+    border-radius: 0.8em;
+    overflow: hidden;
     margin: 0 auto;
-    margin-top: 15px;
-    width: 80%;
-    border-radius: 20px;
-}
 
+  }
+  
+  .search_icon {
+    height: 1em;
+    padding: 0 0.5em 0 0.8em;
+    fill: #abb2bf;
+  }
+  
+  .inputBox {
+    background-color: transparent;
+    color: #000000;
+    outline: none;
+    width: 100%;
+    border: 0;
+    padding: 0.5em 1.5em 0.5em 0;
+    font-size: 1em;
 
+  }
+  
+  ::placeholder {
+    color: #abb2bf;
+  }
 
 
 .children{
