@@ -17,7 +17,10 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken  
 from .models import Users
-
+from django.conf import settings
+import cloudinary
+import cloudinary.uploader
+from cloudinary.uploader import upload
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -39,6 +42,7 @@ class LoginView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'UserId': user.UserId,
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UserProfileAPIView(APIView):
@@ -77,6 +81,74 @@ class UserProfileUpdateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UploadProfilePicture(APIView):
+    def post(self, request):
+        user = request.user
+        profile_picture = request.data.get('profile_picture')
+        
+        if profile_picture:
+            # Tải ảnh lên Cloudinary
+            response = cloudinary.uploader.upload(profile_picture)
+            public_id = response.get('public_id')
+            format = response.get('format')  
+            
+            
+            cloud_name = settings.CLOUDINARY_CLOUD_NAME
+            profile_picture_url = f'https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}'
+
+            
+            user.profile_picture = profile_picture_url
+            user.save()
+
+            print(f'Profile picture URL: {profile_picture_url}')  
+
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class UploadProfilePicture(APIView):
+#     def post(self, request):
+#         user = request.user
+#         profile_picture = request.data.get('profile_picture')
+        
+#         if profile_picture:
+#             
+#             response = cloudinary.uploader.upload(profile_picture)
+#             public_id = response.get('public_id')
+#             format = response.get('format')  
+            
+#            
+#             cloud_name = settings.CLOUDINARY_CLOUD_NAME
+#             profile_picture_url = f'https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}'
+
+#             
+#             user.profile_picture = profile_picture_url
+#             user.save()
+
+#             print(f'Profile picture URL: {profile_picture_url}') 
+
+#             serializer = UserSerializer(user)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class UploadProfilePicture(APIView):
+#       def post(self, request):
+#         user = request.user
+#         profile_picture = request.data.get('profile_picture')
+        
+#         if profile_picture:
+#             response = upload(profile_picture)
+#             public_id = response.get('public_id')
+#             url = response.get('secure_url')
+
+#             # Lưu publicId vào profile_picture của user
+#             user.profile_picture = public_id
+#             user.save()
+
+#             return Response({'url': url}, status=status.HTTP_200_OK)
+#         return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
 class UserViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
@@ -247,18 +319,18 @@ class CommentOnPostView(APIView):
         try:
             post = Post.objects.get(PostId=post_id)
         except Post.DoesNotExist:
-            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"エラー": "ポストが存在しない"}, status=status.HTTP_404_NOT_FOUND)
 
         user = request.user
-        content = request.data.get('content', '')
+        content = request.data.get('コンテンツ', '')
 
         if not content:
-            return Response({"error": "Content cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"エラー": "コンテンツの入力が必死です。"}, status=status.HTTP_400_BAD_REQUEST)
 
         comment = Comment.objects.create(PostId=post, UserId=user, content=content)
 
         # Gửi thông báo đến chủ bài viết
-        send_notification(post.UserId, f"{user.username} commented on your post.")
+        send_notification(post.UserId, f"{user.fullName} が{post.content}にコメントしました.")
 
         return Response({"message": "Comment added successfully.", "comment_id": comment.CommentId}, status=status.HTTP_201_CREATED)
 

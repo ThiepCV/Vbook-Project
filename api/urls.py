@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, PostViewSet, LikeViewSet, CommentViewSet, FollowViewSet,LoginView, RegisterView, UserProfileAPIView, UserProfileUpdateAPIView
 from .views import CreatePostView, UpdatePostView, DeletePostView
-from .views import LikeDislikePostView, CommentOnPostView
+from .views import LikeDislikePostView, CommentOnPostView, UploadProfilePicture
 
 urlpatterns = [
     # user
@@ -24,4 +24,5 @@ urlpatterns = [
     path('likes/', LikeViewSet.as_view(), name="contract"),
     path('comments/', CommentViewSet.as_view(), name="comments"),
     path('follows/', FollowViewSet.as_view(), name="comments"),
+    path('user/upload-profile-picture/', UploadProfilePicture.as_view(), name='upload_profile_picture'),
 ]

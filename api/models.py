@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-
+from cloudinary.models import CloudinaryField
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -21,7 +21,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
     UserId = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
-    profile_picture = models.URLField(blank=True, null=True)
+    # profile_picture = CloudinaryField('image', blank=True, null=True)
+    profile_picture = models.TextField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     personal_link = models.URLField(blank=True, null=True)
     last_login = models.BooleanField(default=False)
