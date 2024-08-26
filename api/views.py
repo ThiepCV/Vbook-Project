@@ -44,6 +44,7 @@ class LoginView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'UserId': user.UserId
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UserProfileAPIView(APIView):
@@ -262,3 +263,110 @@ class FollowingListAPIView(APIView):
         following = user.following.all()
         serializer = FollowingListSerializer(following, many=True)
         return Response({'following': serializer.data}, status=status.HTTP_200_OK)
+    
+class CommentViewSet(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+
+class LikeViewSet(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+class LikeDislikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id, like_type):
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        like, created = Like.objects.get_or_create(PostId=post, UserId=user)
+        
+        if not created:
+            if like.like_type == like_type:
+                # Hủy bỏ like hoặc dislike
+                like.delete()
+                message = f"You have removed your {like_type}."
+            else:
+                # Thay đổi hành động like hoặc dislike
+                like.like_type = like_type
+                like.save(update_fields=['like_type'])
+                message = f"You have changed your reaction to {like_type}."
+        else:
+            like.like_type = like_type
+            like.save(update_fields=['like_type'])
+            message = f"You have {like_type}d the post."
+
+        # Gửi thông báo đến chủ bài viết
+        send_notification(post.UserId, f"{user.username} {message.lower()} on your post.", sender=user)
+        
+        # Đếm số lượng like và dislike
+        like_count = Like.objects.filter(PostId=post, like_type='like').count()
+        dislike_count = Like.objects.filter(PostId=post, like_type='dislike').count()
+        
+        return Response({
+            "message": message,
+            "like_count": like_count,
+            "dislike_count": dislike_count
+        }, status=status.HTTP_200_OK)
+
+class CommentOnPostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        content = request.data.get('content', '')
+
+        if not content:
+            return Response({"error": "Content cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment = Comment.objects.create(PostId=post, UserId=user, content=content)
+
+        # Gửi thông báo đến chủ bài viết
+        send_notification(post.UserId, f"{user.username} commented on your post.")
+
+        return Response({"message": "Comment added successfully.", "comment_id": comment.CommentId}, status=status.HTTP_201_CREATED)
+
+
+class FollowViewSet(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class NotificationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        notifications = Notification.objects.filter(recipient=user).order_by('-created_at')
+        notifications_data = [
+            {
+                "id": notification.id,
+                "sender": notification.sender.username if notification.sender else "System",
+                "message": notification.message,
+                "created_at": notification.created_at,
+                "is_read": notification.is_read
+            } for notification in notifications
+        ]
+        return Response(notifications_data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = request.user
+        notification_ids = request.data.get('notification_ids', [])
+        notifications = Notification.objects.filter(id__in=notification_ids, recipient=user)
+        notifications.update(is_read=True)
+        return Response({"message": "Notifications marked as read"}, status=status.HTTP_200_OK)
