@@ -1,33 +1,29 @@
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { publicRoutes, privateRoutes } from './Routes/Router';
 
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
-import { DefaultLayout } from './components/Layout';
-import { publicRoutes } from './Routes/Router';
-import { Fragment } from 'react';
 function App() {
+  const isAuthenticated = () => {
+    return localStorage.getItem('access') !== null;
+};
   return (
-  <Router>
-    <div>
-      <Routes>
-        {publicRoutes.map((route, index)=>{
-          const Page =route.component;
-          const Layout = route.layout ===null? Fragment: DefaultLayout;
+    <Router>
+      <div>
+        <Routes>
+          {/* Public Routes */}
+          {publicRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
 
-          return (
-            <Route
-              key={index}
-              path={route.path}
-              element={
-                <Layout>
-                  <Page />
-                </Layout>
-              } 
-            />
-          )
-        })}
-      </Routes>
-    </div>
-  </Router>
+          {/* Private Routes */}
+          {privateRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
 
+          {/* Default route */}
+          <Route path="*" element={<Navigate to={isAuthenticated() ? "/home" : "/login"} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
