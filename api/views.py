@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import mixins
-from .models import Users, Post, Like, Comment,Follow
-from .serializers import UserSerializer, PostSerializer, LikeSerializer, CommentSerializer, FollowSerializer
+from .models import Users, Post, Like, Comment,Follow, Notification
+from .serializers import UserSerializer, PostSerializer, LikeSerializer, CommentSerializer, FollowSerializer, ProfileSerializer,RegisterSerializer, LoginSerializer
 from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,99 +11,144 @@ from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
-
+from .notifications import send_notification
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken  
 from .models import Users
-
+from django.conf import settings
+import cloudinary
+import cloudinary.uploader
+from cloudinary.uploader import upload
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+        
+            print(serializer)
+            serializer.save()
+            return Response({"メッセージ": "登録 が出来ました。"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        print(f"Email: {email}, Password: {password}")
-
-        try:
-            user = Users.objects.get(email=email)
-            print(f"Found user: {user.username}")
-
-            if not check_password(password,user.password):
-                print(f"Found user: {user.password}")
-                print("Password does not match")
-                return Response({"エラー": "ユーザーが存在しない"}, status=status.HTTP_400_BAD_REQUEST)
-
-            print("Password matches")
-
-          
-        except Users.DoesNotExist:
-            print("User does not exist")
-            return Response({"message": "Invalid email or password"}, status=status.HTTP_400_BAD_REQUEST)
-        # Tạo token (Nếu sử dụng JWT)
-        refresh = RefreshToken.for_user(user)
-            
-            
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
-        # nếu khong xài JWT thi chay cai nay
-        return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
-
-# class LoginView(APIView):
-#     permission_classes = [AllowAny]  # Không yêu cầu xác thực
-#     def post(self, request):
-#         email = request.data.get('email')
-#         password = request.data.get('password')
-#         user = authenticate( email=email, password=password)
-#         print(email, password)
-#         print(user)
-#         usersss = Users.objects.filter(email='thiep@gmail.com').first()
-#         print("csd",usersss.password)
-#         if user is not None:
-#             login(request, user)
-#             return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
-#     def get(self, request):
-#         return Response({"detail": "Method not allowed. Use POST to log in."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-class RegisterView(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        # Kiểm tra username
-        if Users.objects.filter(username=request.data.get('username')).exists():
-            return Response({"メッセージ": "Username が 存在している"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Kiểm tra  email
-        if Users.objects.filter(email=request.data.get('email')).exists():
-            return Response({"メッセージ": "メールアドレス が 存在している"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Nếu không có lỗi, tiến hành đăng ký
-        serializer = UserSerializer(data=request.data)
+        serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'UserId': user.UserId,
+            }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-class ProfileView(APIView):
+class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-
-    def get(self, request, id=None):
-        user = get_object_or_404(Users, pk=id)
+    def get(self, request, UserId):
+        try:
+            user = Users.objects.get(UserId=UserId)
+        except Users.DoesNotExist:
+            return Response({'エラー': 'ユーザーが存在していません。'}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-    def put(self, request):
-        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, UserId):
+        try:
+            user = Users.objects.get(UserId=UserId)
+        except Users.DoesNotExist:
+            return Response({"エラー': 'ユーザーが存在していません。"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserProfileUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, UserId):
+        try:
+            user = Users.objects.get(UserId=UserId)
+        except Users.DoesNotExist:
+            return Response({'エラー': 'ユーザーが存在していません。'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UploadProfilePicture(APIView):
+    def post(self, request):
+        user = request.user
+        profile_picture = request.data.get('profile_picture')
+        
+        if profile_picture:
+            # Tải ảnh lên Cloudinary
+            response = cloudinary.uploader.upload(profile_picture)
+            public_id = response.get('public_id')
+            format = response.get('format')  
+            
+            
+            cloud_name = settings.CLOUDINARY_CLOUD_NAME
+            profile_picture_url = f'https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}'
+
+            
+            user.profile_picture = profile_picture_url
+            user.save()
+
+            print(f'Profile picture URL: {profile_picture_url}')  
+
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# class UploadProfilePicture(APIView):
+#     def post(self, request):
+#         user = request.user
+#         profile_picture = request.data.get('profile_picture')
+        
+#         if profile_picture:
+#             
+#             response = cloudinary.uploader.upload(profile_picture)
+#             public_id = response.get('public_id')
+#             format = response.get('format')  
+            
+#            
+#             cloud_name = settings.CLOUDINARY_CLOUD_NAME
+#             profile_picture_url = f'https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}'
+
+#             
+#             user.profile_picture = profile_picture_url
+#             user.save()
+
+#             print(f'Profile picture URL: {profile_picture_url}') 
+
+#             serializer = UserSerializer(user)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class UploadProfilePicture(APIView):
+#       def post(self, request):
+#         user = request.user
+#         profile_picture = request.data.get('profile_picture')
+        
+#         if profile_picture:
+#             response = upload(profile_picture)
+#             public_id = response.get('public_id')
+#             url = response.get('secure_url')
+
+#             # Lưu publicId vào profile_picture của user
+#             user.profile_picture = public_id
+#             user.save()
+
+#             return Response({'url': url}, status=status.HTTP_200_OK)
+#         return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
 class UserViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
@@ -122,7 +167,98 @@ class PostViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
     
+class CreatePostView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        print(request)
+        user_id = request.data.get('UserId')
+        content = request.data.get('content')
 
+        if not user_id or not content:
+            return Response(
+                {"error": "ユーザーIDとコンテンツは必須です。"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = Users.objects.get(UserId=user_id)
+        except Users.DoesNotExist:
+            return Response(
+                {"error": "ユーザーが見つかりません。"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        post = Post.objects.create(UserId=user, content=content)
+        serializer = PostSerializer(post)
+        return Response({
+            "post_id": post.PostId,
+            "user_id": post.UserId.UserId,
+            "content": post.content,
+        }, status=status.HTTP_201_CREATED)
+        
+    
+class UpdatePostView(APIView):
+    def put(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        post_id = request.data.get('post_id')
+        new_content = request.data.get('new_content')
+        if not post_id or not new_content:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "missing_required_fields",
+                    "error_message": "ポストIDとコンテンツは必須です。"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "post_does_not_exist",
+                    "error_message": "指定されたポストIDのポストが存在しません。"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        post.content = new_content
+        post.save()
+        serializer = PostSerializer(post)
+        return Response({
+            "user_id": user_id,
+            "post_id": post.PostId,
+            "new_content": post.content,
+            "updated_at": post.updated_at.strftime('%Y-%m-%dT%H:%M:%S')
+        }, status=status.HTTP_200_OK)
+        
+class DeletePostView(APIView):
+    def delete(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        post_id = request.data.get('post_id')
+        if not post_id:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "missing_post_id",
+                    "error_message": "ポストIDは必須です。"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "post_does_not_exist",
+                    "error_message": "指定されたポストIDのポストが存在しません。"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )  
+        post.delete()
+        return Response(
+            {"Massage":"ポストが正常に削除されました。"},
+            status=status.HTTP_200_OK 
+        )
 class CommentViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -135,11 +271,97 @@ class LikeViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     serializer_class = LikeSerializer
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-    
+class LikeDislikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id, like_type):
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        like, created = Like.objects.get_or_create(PostId=post, UserId=user)
+        
+        if not created:
+            if like.like_type == like_type:
+                # Hủy bỏ like hoặc dislike
+                like.delete()
+                message = f"You have removed your {like_type}."
+            else:
+                # Thay đổi hành động like hoặc dislike
+                like.like_type = like_type
+                like.save(update_fields=['like_type'])
+                message = f"You have changed your reaction to {like_type}."
+        else:
+            like.like_type = like_type
+            like.save(update_fields=['like_type'])
+            message = f"You have {like_type}d the post."
+
+        # Gửi thông báo đến chủ bài viết
+        send_notification(post.UserId, f"{user.username} {message.lower()} on your post.", sender=user)
+        
+        # Đếm số lượng like và dislike
+        like_count = Like.objects.filter(PostId=post, like_type='like').count()
+        dislike_count = Like.objects.filter(PostId=post, like_type='dislike').count()
+        
+        return Response({
+            "message": message,
+            "like_count": like_count,
+            "dislike_count": dislike_count
+        }, status=status.HTTP_200_OK)
+
+class CommentOnPostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response({"エラー": "ポストが存在しない"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        content = request.data.get('コンテンツ', '')
+
+        if not content:
+            return Response({"エラー": "コンテンツの入力が必死です。"}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment = Comment.objects.create(PostId=post, UserId=user, content=content)
+
+        # Gửi thông báo đến chủ bài viết
+        send_notification(post.UserId, f"{user.fullName} が{post.content}にコメントしました.")
+
+        return Response({"message": "Comment added successfully.", "comment_id": comment.CommentId}, status=status.HTTP_201_CREATED)
+
 
 class FollowViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-    
+
+
+class NotificationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        notifications = Notification.objects.filter(recipient=user).order_by('-created_at')
+        notifications_data = [
+            {
+                "id": notification.id,
+                "sender": notification.sender.username if notification.sender else "System",
+                "message": notification.message,
+                "created_at": notification.created_at,
+                "is_read": notification.is_read
+            } for notification in notifications
+        ]
+        return Response(notifications_data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = request.user
+        notification_ids = request.data.get('notification_ids', [])
+        notifications = Notification.objects.filter(id__in=notification_ids, recipient=user)
+        notifications.update(is_read=True)
+        return Response({"message": "Notifications marked as read"}, status=status.HTTP_200_OK)
