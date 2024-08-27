@@ -14,7 +14,7 @@ urlpatterns = [
 
 
     path('posts/', PostViewSet.as_view(), name="postlist"),
-    path('api/post/', CreatePostView.as_view(), name='create_post'),
+    path('post/', CreatePostView.as_view(), name='create_post'),
     path('update-post/', UpdatePostView.as_view(), name='update-post'),
     path('delete-post/', DeletePostView.as_view(), name='delete-post'),
     
