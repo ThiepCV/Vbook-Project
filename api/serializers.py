@@ -56,7 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'user', 'content', 'created_at', 'updated_at']
+        fields = ['PostId', 'UserId', 'content', 'created_at', 'updated_at']
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,3 +72,11 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ['id', 'follower', 'followed', 'created_at']
+class FollowerListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['UserId', 'username']
+
+class FollowingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users

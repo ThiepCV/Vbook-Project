@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import mixins
 from .models import Users, Post, Like, Comment,Follow, Notification
+from .serializers import FollowerListSerializer, FollowingListSerializer
 from .serializers import UserSerializer, PostSerializer, LikeSerializer, CommentSerializer, FollowSerializer, ProfileSerializer,RegisterSerializer, LoginSerializer
 from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
@@ -21,6 +22,7 @@ from django.conf import settings
 import cloudinary
 import cloudinary.uploader
 from cloudinary.uploader import upload
+from django.db.models import Q
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -161,11 +163,18 @@ class UserViewSet(generics.GenericAPIView, mixins.ListModelMixin):
 #     serializer_class = UserSerializer
 #     def post(self, request, *args, **kwargs):
 #         return self.create(request, *args, **kwargs)
-class PostViewSet(generics.GenericAPIView, mixins.ListModelMixin):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+class PostViewSet(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        user = request.user
+        # Get posts from the user and the people the user follows
+        posts = Post.objects.filter(
+            Q(UserId=user) | Q(UserId__followers__follower=user)
+        ).order_by('-created_at')
+        
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 class CreatePostView(APIView):
     permission_classes = [IsAuthenticated]
@@ -193,72 +202,101 @@ class CreatePostView(APIView):
             "user_id": post.UserId.UserId,
             "content": post.content,
         }, status=status.HTTP_201_CREATED)
-        
-    
+
 class UpdatePostView(APIView):
-    def put(self, request, *args, **kwargs):
-        user_id = request.data.get('user_id')
-        post_id = request.data.get('post_id')
-        new_content = request.data.get('new_content')
-        if not post_id or not new_content:
-            return Response(
-                {
-                    "timestamp": int(request.timestamp),
-                    "error_code": "missing_required_fields",
-                    "error_message": "ポストIDとコンテンツは必須です。"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, post_id, *args, **kwargs):
+        user = request.user
+        content = request.data.get('content')
+
+        if not content:
+            return Response({"error": "コンテンツは必須です。"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            post = Post.objects.get(PostId=post_id)
+            post = Post.objects.get(PostId=post_id, UserId=user)
+            post.content = content
+            post.save()
+            return Response({"message": "投稿が更新されました。"}, status=status.HTTP_200_OK)
         except Post.DoesNotExist:
-            return Response(
-                {
-                    "timestamp": int(request.timestamp),
-                    "error_code": "post_does_not_exist",
-                    "error_message": "指定されたポストIDのポストが存在しません。"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        post.content = new_content
-        post.save()
-        serializer = PostSerializer(post)
-        return Response({
-            "user_id": user_id,
-            "post_id": post.PostId,
-            "new_content": post.content,
-            "updated_at": post.updated_at.strftime('%Y-%m-%dT%H:%M:%S')
-        }, status=status.HTTP_200_OK)
+            return Response({"error": "投稿が見つかりません。"}, status=status.HTTP_404_NOT_FOUND)
+    
+    
+# class UpdatePostView(APIView):
+#     def put(self, request, *args, **kwargs):
+#         user_id = request.data.get('UserId')
+#         post_id = request.data.get('PostId')
+#         new_content = request.data.get('new_content')
+#         if not post_id :
+#             return Response(
+#                 {
+                   
+#                     "error_code": "missing_required_fields",
+#                     "error_message": "ポストIDとコンテンツは必須です。"
+#                 },
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#         try:
+#             post = Post.objects.get(PostId=post_id)
+#         except Post.DoesNotExist:
+#             return Response(
+#                 {
+#                     "timestamp": int(request.timestamp),
+#                     "error_code": "post_does_not_exist",
+#                     "error_message": "指定されたポストIDのポストが存在しません。"
+#                 },
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#         post.content = new_content
+#         post.save()
+#         serializer = PostSerializer(post)
+#         return Response({
+#             "user_id": user_id,
+#             "post_id": post.PostId,
+#             "new_content": post.content,
+#             "updated_at": post.updated_at.strftime('%Y-%m-%dT%H:%M:%S')
+#         }, status=status.HTTP_200_OK)
         
 class DeletePostView(APIView):
-    def delete(self, request, *args, **kwargs):
-        user_id = request.data.get('user_id')
-        post_id = request.data.get('post_id')
-        if not post_id:
-            return Response(
-                {
-                    "timestamp": int(request.timestamp),
-                    "error_code": "missing_post_id",
-                    "error_message": "ポストIDは必須です。"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    # def delete(self, request, *args, **kwargs):
+    #     user_id = request.data.get('user_id')
+    #     post_id = request.data.get('post_id')
+        
+    #     if not post_id:
+    #         return Response(
+    #             {
+                    
+    #                 "error_code": "missing_post_id",
+    #                 "error_message": "ポストIDは必須です。"
+    #             },
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #     try:
+    #         post = Post.objects.get(PostId=post_id)
+    #     except Post.DoesNotExist:
+    #         return Response(
+    #             {
+    #                 "timestamp": int(timestamp),
+    #                 "error_code": "post_does_not_exist",
+    #                 "error_message": "指定されたポストIDのポストが存在しません。"
+    #             },
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )  
+    #     post.delete()
+    #     return Response(
+    #         {"Massage":"ポストが正常に削除されました。"},
+    #         status=status.HTTP_200_OK 
+    #     )
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, post_id, *args, **kwargs):
+        user = request.user
         try:
-            post = Post.objects.get(PostId=post_id)
+            post = Post.objects.get(PostId=post_id, UserId=user)
+            post.delete()
+            return Response({"message": "投稿を削除しました。"}, status=status.HTTP_204_NO_CONTENT)
         except Post.DoesNotExist:
-            return Response(
-                {
-                    "timestamp": int(request.timestamp),
-                    "error_code": "post_does_not_exist",
-                    "error_message": "指定されたポストIDのポストが存在しません。"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )  
-        post.delete()
-        return Response(
-            {"Massage":"ポストが正常に削除されました。"},
-            status=status.HTTP_200_OK 
-        )
+            return Response({"error": "投稿が見つかりません。"}, status=status.HTTP_404_NOT_FOUND)
 class CommentViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -365,3 +403,55 @@ class NotificationListView(APIView):
         notifications = Notification.objects.filter(id__in=notification_ids, recipient=user)
         notifications.update(is_read=True)
         return Response({"message": "Notifications marked as read"}, status=status.HTTP_200_OK)
+## Create API follow
+class FollowUserAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        follower_id = request.data.get('follower_id')
+        followed_id = request.data.get('followed_id')
+        if not follower_id or not followed_id:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "invalid_data",
+                    "error_message": "follower_id と followed_id は必須です。"
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            follower = Users.objects.get(UserId=follower_id)
+            followed = Users.objects.get(UserId=followed_id)
+        except Users.DoesNotExist:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "user_not_found",
+                    "error_message": "指定されたユーザーが存在しません。"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        follow, created = Follow.objects.get_or_create(
+            follower=follower,
+            followed=followed)
+        if created:
+            serializer = FollowSerializer(follow)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    "timestamp": int(request.timestamp),
+                    "error_code": "already_following",
+                    "error_message": "このユーザーはすでにフォローしています。"
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+class FollowerListAPIView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        user = get_object_or_404(Users, UserId=user_id)
+        followers = user.followers.all()
+        serializer = FollowerListSerializer(followers, many=True)
+        return Response({'followers': serializer.data}, status=status.HTTP_200_OK)
+
+class FollowingListAPIView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        user = get_object_or_404(Users, UserId=user_id)
+        following = user.following.all()
+        serializer = FollowingListSerializer(following, many=True)
+        return Response({'following': serializer.data}, status=status.HTTP_200_OK)

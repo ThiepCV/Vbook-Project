@@ -15,8 +15,8 @@ urlpatterns = [
 
     path('posts/', PostViewSet.as_view(), name="postlist"),
     path('post/', CreatePostView.as_view(), name='create_post'),
-    path('update-post/', UpdatePostView.as_view(), name='update-post'),
-    path('delete-post/', DeletePostView.as_view(), name='delete-post'),
+    path('update-post/<int:post_id>/', UpdatePostView.as_view(), name='update-post'),
+    path('delete-post/<int:post_id>/', DeletePostView.as_view(), name='delete-post'),
     
     path('posts/<int:post_id>/like/', LikeDislikePostView.as_view(), {'like_type': 'like'}, name='like-post'),
     path('posts/<int:post_id>/dislike/', LikeDislikePostView.as_view(), {'like_type': 'dislike'}, name='dislike-post'),
