@@ -8,7 +8,7 @@ import ProfilePictureUpload from '../Page/Profile/ProfilePictureUpload';
 
 // Hàm kiểm tra xem người dùng đã đăng nhập hay chưa
 const isAuthenticated = () => {
-    return localStorage.getItem('access') !== null;
+    return localStorage.getItem('UserId') !== null;
 };
 
 // Public Routes
