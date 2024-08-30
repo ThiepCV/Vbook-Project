@@ -22,37 +22,37 @@ const Follower = () => {
 
         fetchProfile();
     }, [UserId]);
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const loggedInUserId = localStorage.getItem('SelectedUserId');
-                console.log(loggedInUserId)
-                const response = await axiosIntance.get(`user/${loggedInUserId}/`);
-                setUser(response.data);
-                setIsOwnProfile(UserId === loggedInUserId);
-            } catch (error) {
-                console.error('Error fetching profile', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchProfile = async () => {
+    //         try {
+    //             const loggedInUserId = localStorage.getItem('SelectedUserId');
+    //             console.log(loggedInUserId)
+    //             const response = await axiosIntance.get(`user/${loggedInUserId}/`);
+    //             setUser(response.data);
+    //             setIsOwnProfile(UserId === loggedInUserId);
+    //         } catch (error) {
+    //             console.error('Error fetching profile', error);
+    //         }
+    //     };
 
-        fetchProfile();
-    }, [UserId]); 
+    //     fetchProfile();
+    // }, [UserId]); 
 
     useEffect(() => {
         const fetchFollowerCount = async () => {
             try {
                 const loggedInUserId = localStorage.getItem('UserId');
                 const FollowerSearch = 'follows/followers/' + loggedInUserId + '/';
-                const SelectedUserId = localStorage.getItem('SelectedUserId');
-                const SelectedSearch = 'follows/followers/' + SelectedUserId + '/';
+                // const SelectedUserId = localStorage.getItem('SelectedUserId');
+                // const SelectedSearch = 'follows/followers/' + SelectedUserId + '/';
                 console.log("res",FollowerSearch,loggedInUserId);
                 const response = await axiosIntance.get(FollowerSearch);
-                const responsed = await axiosIntance.get(SelectedSearch);
+                // const responsed = await axiosIntance.get(SelectedSearch);
                 console.log("res",response);
                 const followerList = response.data.followers;
                 console.log("res",followerList)
-                const followingLists = responsed.data.followers;
-                setFollowerCount(followingLists.length);
+                // const followingLists = responsed.data.followers;
+                // setFollowerCount(followingLists.length);
                 setFollowerCount(followerList.length);
             } catch (error) {
                 console.error('Error fetching follower count', error);
