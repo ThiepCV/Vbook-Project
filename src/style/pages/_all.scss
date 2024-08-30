@@ -1,5 +1,7 @@
 @use "sass:map";
 @import "theme";
+@media (max-width: 1790px) {
+  
 
 html,body{
     margin: 0;
@@ -18,17 +20,39 @@ a{text-decoration: none}
     height: 1000px;
     display: flex;
 }
-// NAV MENU RIGHT
-.Navright{
-    width: 22%;
-    height: 100%;
-    background-color: #CCDFF0;
-    position: fixed;
-    right: 0;
+// NAV MENU left
+.Navleft{
+  width: 22%;
+  height: 100%;
+  background-color: #CCDFF0;
+  position: fixed;
+  left: 0;
+}
+.nav_logo{
+  width: 50%;
+  height: 100px;
+  // background-color: aquamarine;
+  margin-bottom: 50px;
+  margin-left: 10px;
+  margin-top: -20px;
+}
+
+.notepad{
+  width: 90%;
+  height: 300px;
+  background-color: rgb(255, 255, 255);
+  margin: 0 auto;
+  margin-bottom: 170px;
+  border-radius: 20px;
+  background-image: url(https://i.pinimg.com/474x/83/0f/bf/830fbf540c0c1b1f862edfb22e4f3aa6.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .navigation{
-    margin-left: -20px;
-}
+position: relative;
+bottom: -50px;
+left: -10px;
+  }
 .navigation button {
     background: none; /* Xóa nền của nút */
     border: none;     /* Loại bỏ viền của nút */
@@ -65,7 +89,7 @@ ul#main-menu li:hover .sub-menu{
     width: 50%;
     position: absolute;
     left: 70px;
-    bottom: 5px;
+    bottom: 10px;
     z-index: 3;
     text-align: center;
 }
@@ -81,37 +105,20 @@ ul#main-menu li:hover .sub-menu{
     color: #f5a01a;
 }
 
-.nav_logo{
-    width: 50%;
-    height: 100px;
-    // background-color: aquamarine;
-    margin-bottom: 50px;
-    margin-left: 10px;
-    margin-top: -20px;
-}
-.notepad{
-    width: 90%;
-    height: 300px;
-    background-color: rgb(255, 255, 255);
-    margin: 0 auto;
-    margin-bottom: 170px;
-    border-radius: 20px;
-    // background-image: ;
-}
-.navigation{
-
-height: 300px;
-}
 
 
-//NAV MENU LEFT
-.Navleft{
-    width: 22%;
-    height: 100%;
-    background-color: #CCDFF0;
-    position: fixed;
-    left: 0;
+
+
+
+//NAV MENU right
+.Navright{
+  width: 22%;
+  height: 100%;
+  background-color: #CCDFF0;
+  position: fixed;
+  right: 0;
 }
+
 .calendar-grid{
     width: 90%;
     height: 200px;
@@ -119,6 +126,10 @@ height: 300px;
     margin: 0 auto;
     margin-top: 30px;
     border-radius: 20px;
+    background-image: url(https://img.freepik.com/free-vector/25-international-jazz-day-line-icon-pack-vector-icons-illustration_1142-18524.jpg?t=st=1725002862~exp=1725006462~hmac=062faedebabe4bfa11ca8bfddce8744a0bd89013454b866ddf5e08618558d183&w=2000);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .search-list{
     margin: 0 auto;
@@ -142,11 +153,12 @@ height: 300px;
     display: flex;
     align-items: center;
     flex-direction: row;
-    max-width: 14em;
+    max-width: 18em;
     background-color: #ffffff;
     border-radius: 0.8em;
     overflow: hidden;
     margin: 0 auto;
+    
 
   }
   
@@ -154,6 +166,7 @@ height: 300px;
     height: 1em;
     padding: 0 0.5em 0 0.8em;
     fill: #abb2bf;
+    
   }
   
   .inputBox {
@@ -205,8 +218,10 @@ height: 300px;
     font-size: 40px;
   }
 
-
-
+.space{
+  height: 8px;
+}
+}
 //   .user-info{
 //     width: 90%;
 //     display: flex;

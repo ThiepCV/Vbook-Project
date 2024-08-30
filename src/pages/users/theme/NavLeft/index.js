@@ -19,6 +19,8 @@ const Navleft = () => (
   <>
     <div className='nav_logo'><img src="https://vnext.vn/img/logo.svg" alt="VNEXT Logo" className="vnext-logo" /></div>
     <div className="notepad">
+      <p>
+      </p>
     </div>
     <div className="navigation">
     <ul id='main-menu'>
