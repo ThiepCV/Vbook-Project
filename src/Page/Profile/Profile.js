@@ -6,6 +6,8 @@ import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
 // import FollowPage from "../follow/follow"
+import UserProfile from "../follow/followlist"
+import Follower from "../follow/follower"
 const Profile = () => {
     const [user, setUser] = useState(null);
     const { UserId } = useParams();
@@ -75,6 +77,8 @@ const Profile = () => {
                       <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
             {/* <FollowPage/> */}
+            <UserProfile/>
+            <Follower/>
         </div>
     );
 };

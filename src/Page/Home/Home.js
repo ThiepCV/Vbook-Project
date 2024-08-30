@@ -3,6 +3,7 @@ import SearchPage from "../search/search"
 // import UserProfile from "../follow/follow"
 
 import UserProfile from "../follow/followlist"
+import Follower from "../follow/follower"
 const Home = () =>{
     return(
         <div>
@@ -11,6 +12,7 @@ const Home = () =>{
             <SearchPage/>
             {/* <FollowPage/> */}
             <UserProfile/>
+            <Follower/>
        </div>
     )
 }
