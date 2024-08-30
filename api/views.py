@@ -248,6 +248,7 @@ class FollowerListAPIView(APIView):
     def get(self, request, user_id, *args, **kwargs):
         user = get_object_or_404(Users, UserId=user_id)
         followers = user.followers.all()
+        print(followers)
         serializer = FollowerListSerializer(followers, many=True)
         return Response({'followers': serializer.data}, status=status.HTTP_200_OK)
 
