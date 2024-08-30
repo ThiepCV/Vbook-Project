@@ -5,6 +5,7 @@ import Register from "../Page/Register/Register";
 import Profile from "../Page/Profile/Profile";
 import Home from "../Page/Home/Home";
 import ProfilePictureUpload from '../Page/Profile/ProfilePictureUpload';
+import UpdateProfile from '../Page/Profile/UpdateProfile';
 
 // Hàm kiểm tra xem người dùng đã đăng nhập hay chưa
 const isAuthenticated = () => {
@@ -15,12 +16,12 @@ const isAuthenticated = () => {
 const publicRoutes = [
     { 
         path: '/login', 
-        element: isAuthenticated() ? <Navigate to="/home" /> : <Login />, 
+        element:  <Login />, 
         layout: null 
     },
     { 
         path: '/register', 
-        element: isAuthenticated() ? <Navigate to="/home" /> : <Register />, 
+        element: <Register />, 
         layout: null 
     },
 ];
@@ -30,6 +31,10 @@ const privateRoutes = [
     { 
         path: '/user/:UserId', 
         element: isAuthenticated() ? <Profile /> : <Navigate to="/login" />, 
+    },
+    { 
+        path: 'user/update/', 
+        element: isAuthenticated() ? <UpdateProfile/> : <Navigate to="/login" />, 
     },
     { 
         path: '/profile-upload', 
