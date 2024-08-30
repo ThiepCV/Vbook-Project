@@ -5,6 +5,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
+// import FollowPage from "../follow/follow"
 const Profile = () => {
     const [user, setUser] = useState(null);
     const { UserId } = useParams();
@@ -12,22 +13,37 @@ const Profile = () => {
 
   
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const loggedInUserId = localStorage.getItem('UserId');
-                const response = await axiosIntance.get(`user/${loggedInUserId}/`);
-                setUser(response.data);
-                setIsOwnProfile(UserId === loggedInUserId);
-            } catch (error) {
-                console.error('Error fetching profile', error);
-            }
-        };
+        useEffect(() => {
+            const fetchProfile = async () => {
+                try {
+                    const loggedInUserId = localStorage.getItem('UserId');
+                    const response = await axiosIntance.get(`user/${loggedInUserId}/`);
+                    setUser(response.data);
+                    setIsOwnProfile(UserId === loggedInUserId);
+                } catch (error) {
+                    console.error('Error fetching profile', error);
+                }
+            };
 
-        fetchProfile();
-    }, [UserId]);
+            fetchProfile();
+        }, [UserId]);
 
- 
+        useEffect(() => {
+            const fetchProfile = async () => {
+                try {
+                    const loggedInUserId = localStorage.getItem('SelectedUserId');
+                    console.log(loggedInUserId)
+                    const response = await axiosIntance.get(`user/${loggedInUserId}/`);
+                    setUser(response.data);
+                    setIsOwnProfile(UserId === loggedInUserId);
+                } catch (error) {
+                    console.error('Error fetching profile', error);
+                }
+            };
+
+            fetchProfile();
+        }, [UserId]);
+    
 
     
 
@@ -58,7 +74,7 @@ const Profile = () => {
            
                       <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
-            
+            {/* <FollowPage/> */}
         </div>
     );
 };
