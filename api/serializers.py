@@ -45,7 +45,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ["username", "email", "password", "profile_picture", "bio", "personal_link", "fullName", "birthday"]
+        fields = ["username", "email", "UserId", "profile_picture", "bio", "personal_link", "fullName", "birthday"]
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
@@ -54,29 +54,42 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class PostSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source='UserId.fullName', read_only=True)
+    like_count = serializers.SerializerMethodField()
+    dislike_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ['PostId', 'UserId', 'content', 'created_at', 'updated_at']
+        fields = ['PostId', 'UserId', 'content', 'created_at', 'updated_at','fullName',"like_count","dislike_count"]
+    def get_like_count(self, obj):
+        return Like.objects.filter(PostId=obj, like_type='like').count()
+
+    def get_dislike_count(self, obj):
+        return Like.objects.filter(PostId=obj, like_type='dislike').count()
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'user', 'content', 'created_at']
+        fields = ['CommentId', 'PostId', 'UserId', 'content', 'created_at']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ['id', 'post', 'user', 'created_at', 'like_type']
+        fields = ['LikeId', 'post', 'user', 'created_at', 'like_type']
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ['id', 'follower', 'followed', 'created_at']
+        fields = ['FollowId', 'follower', 'followed', 'created_at']
 class FollowerListSerializer(serializers.ModelSerializer):
+    followed_user = UserSerializer(source='followed', read_only=True)
+    
     class Meta:
-        model = Users
-        fields = ['UserId', 'username']
-
+        model = Follow
+        fields = ['FollowId', 'created_at', 'followed_user']
 class FollowingListSerializer(serializers.ModelSerializer):
+    followed = UserSerializer()
     class Meta:
-        model = Users
+        model = Follow
+        fields = ['FollowId', 'follower', 'followed', 'created_at']

@@ -55,8 +55,13 @@ class UserProfileAPIView(APIView):
             user = Users.objects.get(UserId=UserId)
         except Users.DoesNotExist:
             return Response({'エラー': 'ユーザーが存在していません。'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+         # Kiểm tra xem người dùng đã theo dõi người này chưa
+        is_following = Follow.objects.filter(follower=request.user, followed=user).exists()
+        
+        user_data = UserSerializer(user).data
+        user_data['is_following'] = is_following
+
+        return Response(user_data, status=status.HTTP_200_OK)
     
     def put(self, request, UserId):
         try:
@@ -152,10 +157,13 @@ class UploadProfilePicture(APIView):
 #             return Response({'url': url}, status=status.HTTP_200_OK)
 #         return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
 class UserViewSet(generics.GenericAPIView, mixins.ListModelMixin):
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        query = request.query_params.get('q', '')
+        if query:
+            users = Users.objects.filter(fullName__icontains=query)
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"error_message": "検索クエリが指定されていません。"}, status=status.HTTP_400_BAD_REQUEST)
     
 
 # class CreateUser(generics.CreateAPIView):
@@ -200,7 +208,7 @@ class CreatePostView(APIView):
         return Response({
             "post_id": post.PostId,
             "user_id": post.UserId.UserId,
-            "content": post.content,
+            "content": post.content,    
         }, status=status.HTTP_201_CREATED)
 
 class UpdatePostView(APIView):
@@ -324,11 +332,11 @@ class LikeDislikePostView(APIView):
         
         if not created:
             if like.like_type == like_type:
-                # Hủy bỏ like hoặc dislike
+                
                 like.delete()
                 message = f"You have removed your {like_type}."
             else:
-                # Thay đổi hành động like hoặc dislike
+                
                 like.like_type = like_type
                 like.save(update_fields=['like_type'])
                 message = f"You have changed your reaction to {like_type}."
@@ -337,10 +345,10 @@ class LikeDislikePostView(APIView):
             like.save(update_fields=['like_type'])
             message = f"You have {like_type}d the post."
 
-        # Gửi thông báo đến chủ bài viết
-        send_notification(post.UserId, f"{user.username} {message.lower()} on your post.", sender=user)
+       
+        send_notification(post.UserId, f"{user.fullName} {message.lower()} on your post.", sender=user)
         
-        # Đếm số lượng like và dislike
+        
         like_count = Like.objects.filter(PostId=post, like_type='like').count()
         dislike_count = Like.objects.filter(PostId=post, like_type='dislike').count()
         
@@ -353,6 +361,16 @@ class LikeDislikePostView(APIView):
 class CommentOnPostView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, post_id):
+        try:
+            post = Post.objects.get(PostId=post_id)
+        except Post.DoesNotExist:
+            return Response({"エラー": "ポストが存在しない"}, status=status.HTTP_404_NOT_FOUND)
+
+        comments = Comment.objects.filter(PostId=post)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     def post(self, request, post_id):
         try:
             post = Post.objects.get(PostId=post_id)
@@ -360,7 +378,7 @@ class CommentOnPostView(APIView):
             return Response({"エラー": "ポストが存在しない"}, status=status.HTTP_404_NOT_FOUND)
 
         user = request.user
-        content = request.data.get('コンテンツ', '')
+        content = request.data.get('content', '')
 
         if not content:
             return Response({"エラー": "コンテンツの入力が必死です。"}, status=status.HTTP_400_BAD_REQUEST)
@@ -404,54 +422,80 @@ class NotificationListView(APIView):
         notifications.update(is_read=True)
         return Response({"message": "Notifications marked as read"}, status=status.HTTP_200_OK)
 ## Create API follow
+import time
 class FollowUserAPIView(APIView):
-    def post(self, request, *args, **kwargs):
+     def post(self, request, *args, **kwargs):
         follower_id = request.data.get('follower_id')
         followed_id = request.data.get('followed_id')
+
+       
+        timestamp = int(time.time())
+
+        
         if not follower_id or not followed_id:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
+                    "timestamp": timestamp,
                     "error_code": "invalid_data",
                     "error_message": "follower_id と followed_id は必須です。"
                 },
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+       
+        if follower_id == followed_id:
+            return Response(
+                {
+                    "timestamp": timestamp,
+                    "error_code": "invalid_action",
+                    "error_message": "自分自身をフォローすることはできません。"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             follower = Users.objects.get(UserId=follower_id)
             followed = Users.objects.get(UserId=followed_id)
         except Users.DoesNotExist:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
+                    "timestamp": timestamp,
                     "error_code": "user_not_found",
                     "error_message": "指定されたユーザーが存在しません。"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        
         follow, created = Follow.objects.get_or_create(
             follower=follower,
-            followed=followed)
+            followed=followed
+        )
+
         if created:
+           
             serializer = FollowSerializer(follow)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
+                    "timestamp": timestamp,
                     "error_code": "already_following",
                     "error_message": "このユーザーはすでにフォローしています。"
                 },
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_200_OK  
+            )
 class FollowerListAPIView(APIView):
-    def get(self, request, user_id, *args, **kwargs):
-        user = get_object_or_404(Users, UserId=user_id)
-        followers = user.followers.all()
-        serializer = FollowerListSerializer(followers, many=True)
+    def get(self, request, user_id):
+        follows = Follow.objects.filter(followed=user_id)
+        serializer = FollowerListSerializer(follows, many=True)
         return Response({'followers': serializer.data}, status=status.HTTP_200_OK)
 
 class FollowingListAPIView(APIView):
+   
     def get(self, request, user_id, *args, **kwargs):
         user = get_object_or_404(Users, UserId=user_id)
-        following = user.following.all()
+        following = Follow.objects.filter(follower=user)
         serializer = FollowingListSerializer(following, many=True)
         return Response({'following': serializer.data}, status=status.HTTP_200_OK)

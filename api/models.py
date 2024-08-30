@@ -125,5 +125,5 @@ class Notification(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Notification from {self.sender.username if self.sender else 'System'} to {self.recipient.username}"
+        return f"Notification from {self.sender.fullName if self.sender else 'System'} to {self.recipient.fullName}"
 
