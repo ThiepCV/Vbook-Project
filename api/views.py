@@ -22,6 +22,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken  
 from .models import Users
+from django.http import JsonResponse
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -156,7 +157,6 @@ class UpdatePostView(APIView):
         if not post_id or not new_content:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "missing_required_fields",
                     "error_message": "ポストIDとコンテンツは必須です。"
                 },
@@ -167,7 +167,6 @@ class UpdatePostView(APIView):
         except Post.DoesNotExist:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "post_does_not_exist",
                     "error_message": "指定されたポストIDのポストが存在しません。"
                 },
@@ -190,7 +189,6 @@ class DeletePostView(APIView):
         if not post_id:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "missing_post_id",
                     "error_message": "ポストIDは必須です。"
                 },
@@ -201,7 +199,6 @@ class DeletePostView(APIView):
         except Post.DoesNotExist:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "post_does_not_exist",
                     "error_message": "指定されたポストIDのポストが存在しません。"
                 },
@@ -219,7 +216,6 @@ class FollowUserAPIView(APIView):
         if not follower_id or not followed_id:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "invalid_data",
                     "error_message": "follower_id と followed_id は必須です。"
                 },
@@ -230,7 +226,6 @@ class FollowUserAPIView(APIView):
         except Users.DoesNotExist:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "user_not_found",
                     "error_message": "指定されたユーザーが存在しません。"
                 },
@@ -245,7 +240,6 @@ class FollowUserAPIView(APIView):
         else:
             return Response(
                 {
-                    "timestamp": int(request.timestamp),
                     "error_code": "already_following",
                     "error_message": "このユーザーはすでにフォローしています。"
                 },
@@ -370,3 +364,14 @@ class NotificationListView(APIView):
         notifications = Notification.objects.filter(id__in=notification_ids, recipient=user)
         notifications.update(is_read=True)
         return Response({"message": "Notifications marked as read"}, status=status.HTTP_200_OK)
+    
+class SearchView(APIView):
+    def get(self,request):
+        query = request.GET.get('q', '')
+        if query:
+            users = Users.objects.filter(fullName=query)
+        else:
+            users = Users.objects.all()
+        
+        user_list = list(users.values('UserId', 'fullName'))
+        return JsonResponse(user_list, safe=False)

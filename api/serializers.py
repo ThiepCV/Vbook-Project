@@ -29,7 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ['username', 'email', 'password', 'profile_picture', 'bio', 'personal_link']
+        fields = ['username', 'email', 'password', 'profile_picture', 'bio', 'personal_link',"birthday","fullName"]
 
     def create(self, validated_data):
         user = Users.objects.create_user(
@@ -38,7 +38,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             profile_picture=validated_data.get('profile_picture', ''),
             bio=validated_data.get('bio', ''),
-            personal_link=validated_data.get('personal_link', '')
+            personal_link=validated_data.get('personal_link', ''),
+            fullName = validated_data["fullName"],
+            birthday = validated_data["birthday"],
         )
         return user
 class UserSerializer(serializers.ModelSerializer):
@@ -93,3 +95,9 @@ class FollowingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ['UserId', 'username']
+
+class FollowingListSerializer(serializers.ModelSerializer):
+    followed_user = UserSerializer(source='followed')
+    class Meta:
+        model = Follow
+        fields = ['FollowId', 'followed_user']
