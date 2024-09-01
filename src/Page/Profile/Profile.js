@@ -76,6 +76,7 @@ import PostFeed from '../Posts/PostFeed/PostFeed';
 const ProfilePage = ({ userId }) => {
     const { UserId } = useParams();
     const [user, setUser] = useState(null);
+    const [posts, setPosts] = useState([]);
     const[currentUserId, setCurrentUserId] = useState()
     useEffect(() => {
         const fetchUser = async () => {
@@ -86,6 +87,14 @@ const ProfilePage = ({ userId }) => {
               
                 const response = await axiosIntance.get(`/user/${UserId}/`);
                 setUser(response.data);
+                const postsResponse = await axiosIntance.get('posts/');
+                console.log('posssss', postsResponse)
+                // Filter posts for the specific user
+                const userPosts = postsResponse.data.filter(post => Number(post.UserId) === Number(UserId));
+                console.log('User posts:', userPosts);
+
+                setPosts(userPosts);
+
             } catch (error) {
                 console.error("Error fetching user data", error);
             }
@@ -115,12 +124,12 @@ const ProfilePage = ({ userId }) => {
                           </Link>
                     <FollowersList userId={user.UserId} />
                     <FollowingList userId={user.UserId} />
-                    {/* Add functionality to edit profile picture */}
+                    
                 </div>
             ) : (
                 <FollowButton userId={UserId} currentUserId={currentUserId} />
             )}
-            <PostFeed currentUserId={currentUserId} />
+            <PostFeed posts={posts} />
         </div>
     );
 };

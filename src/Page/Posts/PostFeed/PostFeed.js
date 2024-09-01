@@ -133,7 +133,7 @@ const PostFeed = ({ onPostDeleted, posts }) => {
     const token = localStorage.getItem('access');
     if (!token) {
       setError('投稿を見るにはログインする必要があります。');
-      setLoading(false);
+      setLoading(false);  
       return;
     }
 
@@ -173,8 +173,7 @@ const PostFeed = ({ onPostDeleted, posts }) => {
 
   const renderPosts = () => {
     
-    console.log(fetchedPosts)
-    console.log(currentUserId)
+    
     return fetchedPosts.map((post) => (
       <div key={String(post.PostId)} className="post">
         <p>

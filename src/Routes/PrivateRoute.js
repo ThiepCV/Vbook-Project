@@ -1,9 +1,15 @@
-import { Navigate } from 'react-router-dom';
-
-const PrivateRoute = ({ children }) => {
-    const isAuthenticated = !!localStorage.getItem('access'); // Kiểm tra nếu người dùng đã đăng nhập
-
-    return isAuthenticated ? children : <Navigate to="/login" />;
+const withLayout = (Component, Layout) => {
+    return (props) => {
+        const PageComponent = Component;  // Đảm bảo rằng Component là một component React
+        return (
+            Layout ? (
+                <Layout>
+                    <PageComponent {...props} />
+                </Layout>
+            ) : (
+                <PageComponent {...props} />
+            )
+        );
+    };
 };
-
-export default PrivateRoute;
+export default withLayout
