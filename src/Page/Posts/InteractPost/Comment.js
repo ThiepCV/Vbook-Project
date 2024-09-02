@@ -44,12 +44,12 @@ const Comments = ({ postId }) => {
     return (
         <div>
             <div className='comment'>
-                
+                <div className='comment_ic'>
                 <button onClick={() => setShowComments(!showComments)}>
                     {commentCount} <FontAwesomeIcon icon={faComment} />
                 </button>
-                <button onClick={() => setShowComments('dislike')}><FontAwesomeIcon icon={faPaperPlane} /></button>
-            </div>
+                <button ><FontAwesomeIcon icon={faPaperPlane} /></button>
+                </div>
 
                 {showComments && (
                     <div>
@@ -57,20 +57,26 @@ const Comments = ({ postId }) => {
                             <div key={comment.CommentId}>
                                 <p>{comment.content}</p>
                                 {/* <span onClick={() => handleProfileClick(comment.userId)}>
-                                 {comment.fullName}
-            </span> */}
+                                 {comment.fullName}</span> */}
                             </div>
                         ))}
                         <div className='comment_content'>
-                        <textarea
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        />
-                        <button onClick={handleAddComment}>Add Comment</button>
+                            <textarea
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                            />
+                            <button onClick={handleAddComment}>Add Comment</button>
                         </div>
+
                     </div>
+
+
                 )}
-            
+
+
+            </div>
+
+
         </div>
 
     );

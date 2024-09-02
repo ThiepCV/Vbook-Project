@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from './Routes/Router';
-
+import { Fragment } from "react";
+import DefaultLayout from './components/Layout/DefaultLayout';
+import RouteWrapper from './Routes/PrivateRoute';
+import withLayout from './Routes/PrivateRoute';
 function App() {
   const isAuthenticated = () => {
     return localStorage.getItem('access') !== null;
@@ -11,16 +14,34 @@ function App() {
         <Routes>
           {/* Public Routes */}
           {publicRoutes.map((route, index) => (
+            
             <Route key={index} path={route.path} element={route.element} />
           ))}
 
-          {/* Private Routes */}
-          {privateRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
-          ))}
+         
+{privateRoutes.map((route, index) => {
+const Page = route.component;
+            const Layout = route.layout === null ? Fragment : DefaultLayout;
 
-          {/* Default route */}
-          <Route path="*" element={<Navigate to={isAuthenticated() ? "/home" : "/login"} />} />
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={
+                  isAuthenticated() ? (
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+            );
+          })}
+
+          
+         
         </Routes>
       </div>
     </Router>

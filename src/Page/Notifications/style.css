@@ -1,9 +1,45 @@
 .Notifications h2{
 text-align: center;
+width: 100;
 }
 .Notifications_botton{
     display: grid; /* Kích hoạt Grid Layout */
     place-items: center; /* Căn giữa theo cả hai chiều */
+    /* margin-bottom: 100px; */
 
 
 }
+.button_NO{
+    width: 100%;
+    display: flex;
+    /* color: black; */
+}
+.button_NO :focus{
+    width: 100%;
+    display: flex;
+    color: aliceblue;
+    margin-bottom: 50px;
+}
+.Notifications_botton{
+    width: 100%;
+    margin: 0 auto;
+    /* background-color: #ffff; */
+    margin-top: 20px;
+}
+.notification_rp{
+    /* background-color: #ffff; */
+    width: 100%;}
+.pr_button button{
+    /* background-color: #ffff; */
+margin-bottom: 50px;
+font-weight: bold;
+}
+/* Basic horizontal rule styling */
+hr {
+    border: none;             /* Remove default border */
+    height: 2px;              /* Set height for the line */
+    background-color: #ffffff; /* Set the color to white */
+    margin: 20px 0;           /* Add margin for spacing */
+    width: 530px;              /* Make the line span the full width of its container */
+}
+

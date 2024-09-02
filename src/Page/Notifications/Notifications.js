@@ -35,18 +35,30 @@ const Notifications = () => {
 
     return (
         <div className='Notifications'>
-            <h2>Thông báo</h2>
+            <h2>通知</h2>
+            <div className='button_NO'>
+            <button onClick={handleMarkAsRead}>ACTIVITY</button>
+            <button onClick={handleMarkAsRead}>NOTIFICATION</button>
+            </div>
             {loading ? (
                 <p>Đang tải...</p>
             ) : (
                 <div className='Notifications_botton'>
                     {notifications.map(notification => (
                         <div key={notification.id} className={notification.is_read ? 'notification-read' : 'notification-unread'}>
-                            <p>{notification.message}</p>
+                            <div className='notification_rp'>
+                            <p >{notification.message}</p>
+                            <hr/>
+                            </div>
+                       
                         </div>
+                        
                     ))}
-                    <button onClick={handleMarkAsRead}>Đánh dấu tất cả đã đọc</button>
+                    
+                    <div className='pr_button'><button  onClick={handleMarkAsRead}>全て読んだ</button></div>
+                    
                 </div>
+                
             )}
         </div>
     );

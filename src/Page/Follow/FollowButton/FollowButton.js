@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axiosIntance from '../../../api/axiosInstance';
+import axiosIntance from "../../api/axiosInstance";
+import { FaUserPlus } from "react-icons/fa";
+import { FaUserCheck } from "react-icons/fa";
 
 
 const FollowButton = ({ userId, currentUserId }) => {
@@ -39,9 +41,9 @@ const FollowButton = ({ userId, currentUserId }) => {
     return (
         <div>
             {isFollowing ? (
-                <button>Đã theo dõi</button>
+                <button><FaUserPlus /></button>
             ) : (
-                <button onClick={handleFollow}>Theo dõi</button>
+                <button onClick={handleFollow}><FaUserCheck /></button>
             )}
         </div>
     );

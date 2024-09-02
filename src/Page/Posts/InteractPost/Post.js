@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosIntance from '../../../api/axiosInstance';
 import { faComment, faSearch, faHeart, faUser, faBars } from '@fortawesome/free-solid-svg-icons'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Comments from '../InteractPost/Comment';
 import "../InteractPost/style.css"
 
 const Post = ({ post }) => {
@@ -30,9 +31,10 @@ const Post = ({ post }) => {
         <div className='like'>
             {/* <h3>{post.title}</h3>
             <p>{post.content}</p> */}
-             <button onClick={() => handleLikeDislike('/heart')}>{likeCount}
-            <FontAwesomeIcon icon={faHeart}/>
-          </button>
+            <button onClick={() => handleLikeDislike('like')}><FontAwesomeIcon icon={faHeart}/>{likeCount}</button>
+            {/* <button onClick={() => handleLikeDislike('dislike')}><FontAwesomeIcon icon={faHeart}/>{dislikeCount}</button> */}
+          <Comments postId={post.PostId} />
+         
         </div>
     );
 };

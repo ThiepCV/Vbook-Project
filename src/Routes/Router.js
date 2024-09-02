@@ -6,6 +6,10 @@ import Profile from "../Page/Profile/Profile";
 import Home from "../Page/Home/Home";
 import ProfilePictureUpload from '../Page/Profile/ProfilePictureUpload';
 import UpdateProfile from '../Page/Profile/UpdateProfile';
+import DefaultLayout from '../components/Layout/DefaultLayout';
+import withLayout from './PrivateRoute';
+import SearchPage from '../Page/Search/Search';
+import Notifications from '../Page/Notifications/Notifications';
 
 // Hàm kiểm tra xem người dùng đã đăng nhập hay chưa
 const isAuthenticated = () => {
@@ -26,24 +30,31 @@ const publicRoutes = [
     },
 ];
 
-// Private Routes
+
+
 const privateRoutes = [
-    { 
-        path: '/user/:UserId', 
-        element: isAuthenticated() ? <Profile /> : <Navigate to="/login" />, 
-    },
-    { 
-        path: 'user/update/', 
-        element: isAuthenticated() ? <UpdateProfile/> : <Navigate to="/login" />, 
-    },
-    { 
-        path: '/profile-upload', 
-        element: isAuthenticated() ? <ProfilePictureUpload /> : <Navigate to="/login" />, 
-    },
-    { 
+   
+     { 
         path: '/home', 
-        element: isAuthenticated() ? <Home /> : <Navigate to="/login" />, 
+        component: Home , 
+        
     },
+    {
+        path: '/user/:UserId', 
+        component: Profile
+    },
+    {
+        path: '/search', 
+        component: SearchPage
+    },
+    {
+        path: '/profile-upload', 
+        component: ProfilePictureUpload
+    },
+    {
+        path: '/notifications', 
+        component: Notifications
+    }
 ];
 
 export { publicRoutes, privateRoutes };

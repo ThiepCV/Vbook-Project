@@ -10,11 +10,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import "../Home/style.css"
 import NavrightComponent from "../../pages/users/theme/NavRight/navright";
 import Navleft from "../../pages/users/theme/NavLeft/navleft";
-const Home = () =>{
+const Home = () => {
     const UserId = localStorage.getItem('UserId');
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
-   
+    const [user, setUser] = useState(null);
+
     const fetchPosts = async () => {
         const token = localStorage.getItem('access');
         if (!token) return;
@@ -30,7 +31,7 @@ const Home = () =>{
     };
 
     const handlePostCreated = (newPost) => {
-        fetchPosts(); 
+        fetchPosts();
         setPosts([newPost, ...posts]);
     };
 
@@ -48,26 +49,15 @@ const Home = () =>{
     //     }
     // };
     return (
-        <div className="body">
-            <div className="Navright"><NavrightComponent/></div>
-            <div className="children">
-                {/* <Notifications/> */}
-            {/* <h1>Xin chào</h1> */}
-            {/* <div className = "post"> 
-            <CreatePost onPostCreated={handlePostCreated} posts={posts} />
-            </div> */}
-          
-              {/* <div className="search"><SearchPage /></div> */}
-            <PostFeed posts={posts} onPostDeleted={handlePostDeleted} /> 
-             {/* <Notifications /> */}
-        {/* <Link to={`/user/${UserId}`}>
-          
-            <button >Profile</button>  </Link> */}
-            {/* <Profile/> */}
-            </div>
-            <div className="Navleft"><Navleft/></div>
+        <div>
+            <div className="home">
+                    <div className="post_lane"><PostFeed posts={posts} onPostDeleted={handlePostDeleted} /> </div>
+
+                </div>
+            <div />
+
         </div>
-    );
+            );
 };
 
-export default Home
+            export default Home
