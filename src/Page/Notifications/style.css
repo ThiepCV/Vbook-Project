@@ -1,0 +1,9 @@
+.Notifications h2{
+text-align: center;
+}
+.Notifications_botton{
+    display: grid; /* Kích hoạt Grid Layout */
+    place-items: center; /* Căn giữa theo cả hai chiều */
+
+
+}

@@ -1,38 +1,74 @@
-// src/components/FollowingList.js
-import React, { useState, useEffect } from 'react';
-import axiosIntance from '../../api/axiosInstance';
+import { useState, useEffect } from 'react';
+import axiosIntance from "../../api/axiosInstance";
+import { useParams } from 'react-router-dom';
+
+const UserProfile = () => {
+    const { UserId } = useParams();
+    const [user, setUser] = useState(null);
+    const [isOwnProfile, setIsOwnProfile] = useState(false);
+    const [followingCount, setFollowingCount] = useState(0); 
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const loggedInUserId = localStorage.getItem('UserId');
+                const response = await axiosIntance.get(`user/${loggedInUserId}/`);
+                setUser(response.data);
+                setIsOwnProfile(UserId === loggedInUserId);
+            } catch (error) {
+                console.error('Error fetching profile', error);
+            }
+        };
+
+        fetchProfile();
+    }, [UserId]);
+    // useEffect(() => {
+    //     const fetchProfile = async () => {
+    //         try {
+    //             const loggedInUserId = localStorage.getItem('SelectedUserId');
+    //             console.log(loggedInUserId)
+    //             const response = await axiosIntance.get(`user/${loggedInUserId}/`);
+    //             setUser(response.data);
+    //             setIsOwnProfile(UserId === loggedInUserId);
+    //         } catch (error) {
+    //             console.error('Error fetching profile', error);
+    //         }
+    //     };
+
+    //     fetchProfile();
+    // }, [UserId]); 
+
+    useEffect(() => {
+        const fetchFollowingCount = async () => {
+            try {
+                const loggedInUserId = localStorage.getItem('UserId');
+                // const SelectedUserId = localStorage.getItem('SelectedUserId');
+                const urlSearch = 'follows/following/' + loggedInUserId + '/';
+                // const SelectedSearch = 'follows/following/' + SelectedUserId + '/';
+                console.log("res",urlSearch,loggedInUserId);
+                const response = await axiosIntance.get(urlSearch);
+                // const responsed = await axiosIntance.get(SelectedSearch);
+                console.log("res",response);
+                const followingList = response.data.following;
+                // const followingLists = responsed.data.following;
+                console.log("res",response.data.following)
+                setFollowingCount(followingList.length);
+                // setFollowingCount(followingLists.length);
+            } catch (error) {
+                console.error('Error fetching following count', error);
+            }
+        };
+        fetchFollowingCount();
+    }, [UserId]);
 
 
-const FollowingList = ({ userId }) => {
-  const [following, setFollowing] = useState([]);
 
-  useEffect(() => {
-    const fetchFollowing = async () => {
-      try {
-        const response = await axiosIntance.get(`follows/following/${userId}/`);
-        setFollowing(response.data.following);
-        console.log("foling",following)
-      } catch (error) {
-        console.error("Failed to fetch following list:", error);
-      }
-    };
-
-    fetchFollowing();
-  }, [userId]);
-
-  return (
-    <div>
-      <h2>Following List</h2>
-      <ul>
-      {following.map(follow => (
-          <li key={follow.FollowId}>
-            {/* <img src={follow.followed.profile_picture} alt={follow.followed.fullName} width="50" height="50" /> */}
-            <span>{follow.followed.fullName}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div>
+            <p>Following Count: {followingCount}</p>
+            {/* Other profile details */}
+        </div>
+    );
 };
 
-export default FollowingList;
+export default UserProfile;

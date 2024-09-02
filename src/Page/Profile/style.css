@@ -1,0 +1,49 @@
+
+.profile_page{
+   width: 100%;
+   height: fit-content;
+    border-radius: 20px;
+}
+.profile{
+    width: 100%;
+    height: fit-content;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    /* background-color: aqua; */
+    /* text-align: center; */
+    display: flex;
+    margin-top: 9%;
+
+}
+.profile_img {
+    margin-right: 100px;
+}
+.avatar {
+    width: 150px;  /* Chiều rộng của hình tròn */
+    height: 150px; /* Chiều cao của hình tròn */
+    border-radius: 100%; /* Làm cho hình ảnh thành hình tròn */
+    overflow: hidden; /* Ẩn phần hình ảnh ngoài khu vực hình tròn */
+    background-color: bisque;
+    margin-bottom: 20px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+.avatar link{
+    margin-top: 500px;
+}
+.avatar img{
+    /* border-radius: 50%; */
+    width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng của khung */
+    height: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều cao của khung */
+    object-fit: cover; /* Đảm bảo hình ảnh không bị biến dạng */
+    /* margin-right: 100px; */
+
+}
+.mypost{
+    display: grid; /* Kích hoạt Grid Layout */
+    place-items: center; /* Căn giữa theo cả hai chiều */
+    height: 100vh; /* Đảm bảo chiều cao của phần tử chứa đủ lớn */
+
+}

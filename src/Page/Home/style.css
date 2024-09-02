@@ -1,0 +1,235 @@
+.post {
+    /* margin: 0 auto; */
+    /* background-color: aqua; */
+    /* position: relative; */
+    /* top: 10px; */
+
+
+}
+
+
+
+
+
+html,body{
+    margin: 0;
+}
+ul {
+    list-style: none;
+    text-decoration: none;
+    }
+li {
+    /* margin: 10px 0 10px 0; */
+    text-decoration: none;
+    }
+a{text-decoration: none}
+.body{
+    width: 100%;
+    height: 1000px;
+    display: flex;
+}
+/* // NAV MENU left */
+.Navleft{
+  width: 22%;
+  height: 100%;
+  background-color: #CCDFF0;
+  position: fixed;
+  left: 0;
+}
+.nav_logo{
+  width: 50%;
+  height: 100px;
+  /* // background-color: aquamarine; */
+  margin-bottom: 50px;
+  margin-left: 10px;
+  margin-top: -10px;
+}
+
+.notepad{
+  width: 90%;
+  height: 300px;
+  background-color: rgb(255, 255, 255);
+  margin: 0 auto;
+  margin-bottom: 170px;
+  border-radius: 20px;
+  background-image: url(https://i.pinimg.com/474x/83/0f/bf/830fbf540c0c1b1f862edfb22e4f3aa6.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.navigation{
+position: relative;
+bottom: 10%;
+left: -150px;
+
+  }
+.navigation button {
+    margin: 10px 0 10px 0;
+    background: none; /* Xóa nền của nút */
+    border: none;     /* Loại bỏ viền của nút */
+    padding: 0;       /* Loại bỏ padding để hình ảnh biểu tượng không bị dịch chuyển */
+    cursor: pointer;  /* Thay đổi con trỏ chuột khi di chuột qua nút */
+    outline: none;    /* Loại bỏ viền khi nút được nhấn (nếu có) */
+    color: #000000
+  }
+  
+  .navigation button:focus {
+    outline: none;    /* Đảm bảo không có viền khi nút được focus */
+  }
+  .navigation button:hover{
+    color: #f5a01a
+  }
+  
+  .navigation button {
+    font-size: 22px; /* Điều chỉnh kích thước biểu tượng nếu cần */
+  }
+
+ul#main-menu .sub-menu{
+    display: none;
+    color:#000000
+}
+ul#main-menu li:hover .sub-menu{
+    display: block;
+    text-decoration: none;
+    color: #f5a01a;
+    
+}
+.sub-menu{
+    background-color: aliceblue;
+    border-radius: 20px;
+    width: 50%;
+    position: absolute;
+    left: 70px;
+    bottom: 10px;
+    z-index: 3;
+    text-align: center;
+}
+.sub-menu li{
+    font-size: 12px;
+    margin-right: 50px;
+}
+.sub-menu a{
+    color: #000;
+    font-weight: bold;
+}
+.sub-menu a:hover{
+    color: #f5a01a;
+}
+
+
+
+
+
+
+/* //NAV MENU right */
+.Navright{
+  width: 22%;
+  height: 100%;
+  background-color: #CCDFF0;
+  position: fixed;
+  right: 0;
+}
+
+.calendar-grid{
+    width: 90%;
+    height: 200px;
+    background-color: #ffffff;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 20px;
+    background-image: url(https://img.freepik.com/free-vector/25-international-jazz-day-line-icon-pack-vector-icons-illustration_1142-18524.jpg?t=st=1725002862~exp=1725006462~hmac=062faedebabe4bfa11ca8bfddce8744a0bd89013454b866ddf5e08618558d183&w=2000);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.search-list{
+    margin: 0 auto;
+    width: 90%;
+    height:420px;
+    background-color: #ffffff;
+    margin-top: 30px;
+    border-radius: 20px 20px 0 0 ;
+
+}
+.search_right{
+    background-color: #CBE5FC;
+    height: 50px;
+    border-radius: 20px 20px 0 0 ;
+    text-align: center;
+}
+
+
+/* From Uiverse.io by OnCloud125252 */ 
+.inputBox_container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    max-width: 17em;
+    background-color: #ffffff;
+    border-radius: 0.8em;
+    overflow: hidden;
+    margin: 0 auto;
+    
+
+  }
+  
+  .search_icon {
+    height: 1em;
+    padding: 0 0.5em 0 0.8em;
+    fill: #abb2bf;
+    
+  }
+  
+  .inputBox {
+    background-color: transparent;
+    color: #000000;
+    outline: none;
+    width: 100%;
+    border: 0;
+    padding: 0.2em 1.5em 0.5em 0;
+    font-size: 1em;
+
+  }
+  
+  ::placeholder {
+    color: #abb2bf;
+  }
+
+
+.children{
+    width: 45%;
+    height: fit-content ;
+    background-color: #CCDFF0;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.navigation_left button {
+    background: none; /* Xóa nền của nút */
+    border: none;     /* Loại bỏ viền của nút */
+    padding: 0;       /* Loại bỏ padding để hình ảnh biểu tượng không bị dịch chuyển */
+    cursor: pointer;  /* Thay đổi con trỏ chuột khi di chuột qua nút */
+    outline: none;    /* Loại bỏ viền khi nút được nhấn (nếu có) */
+    color: #f5a01a;
+    position: fixed;
+    right: 12px;
+    bottom: 250px;
+
+    
+  }
+  
+  .navigation_left button:focus {
+    outline: none;    
+  }
+  .navigation_left button:hover{
+    color: #CCDFF0
+  }
+  
+  .navigation_left button {
+    font-size: 40px;
+  }
+
+.space{
+  height: 8px;
+}
+

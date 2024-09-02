@@ -111,6 +111,7 @@ import axiosInstance from '../../../api/axiosInstance';
 import EditPost from './EditPost';
 import Post from '../InteractPost/Post';
 import Comments from '../InteractPost/Comment';
+import "../PostFeed/style.css"
 
 const PostFeed = ({ onPostDeleted, posts }) => {
   const currentUserId = localStorage.getItem('UserId');
@@ -142,8 +143,10 @@ const PostFeed = ({ onPostDeleted, posts }) => {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
+        
       });
       setFetchedPosts(response.data);
+      console.log("res",response.data)
       
     } catch (error) {
       setError('投稿の取得中にエラーが発生しました。');
@@ -176,14 +179,16 @@ const PostFeed = ({ onPostDeleted, posts }) => {
     console.log(fetchedPosts)
     console.log(currentUserId)
     return fetchedPosts.map((post) => (
-      <div key={String(post.PostId)} className="post">
-        <p>
-          <strong>{post.fullName || post.user}</strong>: {post.content}
-        </p>
+      <div className="post"> 
+      <div key={String(post.PostId)} className='post_ls' >
+        <h1>
+          <strong>{post.fullName || post.user}</strong>
+        </h1>
+        <p> {post.content}</p>
         <p>
           <small>{new Date(post.created_at).toLocaleString()}</small>
         </p>
-        {post.UserId == currentUserId && (
+        {post.UserId === currentUserId && (
           
         <>
           <button onClick={() => deletePost(post.PostId)}>削除</button>
@@ -200,8 +205,14 @@ const PostFeed = ({ onPostDeleted, posts }) => {
             }}
           />
         )}
+        <div className='likeComment'>
         <Post post={post} />
         <Comments postId={post.PostId} />
+        </div>
+        
+
+        
+      </div>
       </div>
     ));
   };
@@ -215,8 +226,8 @@ const PostFeed = ({ onPostDeleted, posts }) => {
   }
 
   return (
-    <div>
-      <h2>フィード</h2>
+    <div className='post_ls'>
+      {/* <h2>フィード</h2> */}
       {fetchedPosts.length > 0 ? renderPosts() : <p>表示する投稿がありません。</p>}
     </div>
   );

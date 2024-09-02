@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosIntance from '../../../api/axiosInstance';
-
+import { faComment, faSearch, faHeart, faUser, faBars } from '@fortawesome/free-solid-svg-icons'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "../InteractPost/style.css"
 
 const Post = ({ post }) => {
     const [likeCount, setLikeCount] = useState(0);
@@ -25,11 +27,12 @@ const Post = ({ post }) => {
     };
 
     return (
-        <div>
+        <div className='like'>
             {/* <h3>{post.title}</h3>
             <p>{post.content}</p> */}
-            <button onClick={() => handleLikeDislike('like')}>Like {likeCount}</button>
-            <button onClick={() => handleLikeDislike('dislike')}>Dislike {dislikeCount}</button>
+             <button onClick={() => handleLikeDislike('/heart')}>{likeCount}
+            <FontAwesomeIcon icon={faHeart}/>
+          </button>
         </div>
     );
 };

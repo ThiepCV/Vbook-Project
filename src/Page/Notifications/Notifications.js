@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNotifications, markNotificationsAsRead } from './NotificationsService';
+import "../Notifications/style.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -32,12 +34,12 @@ const Notifications = () => {
     };
 
     return (
-        <div>
+        <div className='Notifications'>
             <h2>Thông báo</h2>
             {loading ? (
                 <p>Đang tải...</p>
             ) : (
-                <div>
+                <div className='Notifications_botton'>
                     {notifications.map(notification => (
                         <div key={notification.id} className={notification.is_read ? 'notification-read' : 'notification-unread'}>
                             <p>{notification.message}</p>

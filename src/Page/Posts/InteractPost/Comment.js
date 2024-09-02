@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosIntance from '../../../api/axiosInstance';
-
+import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "../InteractPost/style.css"
 
 const Comments = ({ postId }) => {
     const [comments, setComments] = useState([]);
@@ -33,7 +35,7 @@ const Comments = ({ postId }) => {
             setCommentCount(commentCount + 1); // Increment the comment count
         } catch (error) {
             console.error(error);
-            
+
         }
     };
     const handleProfileClick = (userId) => {
@@ -41,28 +43,36 @@ const Comments = ({ postId }) => {
     };
     return (
         <div>
-            <button onClick={() => setShowComments(!showComments)}>
-                {commentCount} Comments
-            </button>
+            <div className='comment'>
+                
+                <button onClick={() => setShowComments(!showComments)}>
+                    {commentCount} <FontAwesomeIcon icon={faComment} />
+                </button>
+                <button onClick={() => setShowComments('dislike')}><FontAwesomeIcon icon={faPaperPlane} /></button>
+            </div>
 
-            {showComments && (
-                <div>
-                    {comments.map(comment => (
-                        <div key={comment.CommentId}>
-                            <p>{comment.content}</p>
-                            {/* <span onClick={() => handleProfileClick(comment.userId)}>
+                {showComments && (
+                    <div>
+                        {comments.map(comment => (
+                            <div key={comment.CommentId}>
+                                <p>{comment.content}</p>
+                                {/* <span onClick={() => handleProfileClick(comment.userId)}>
                                  {comment.fullName}
             </span> */}
+                            </div>
+                        ))}
+                        <div className='comment_content'>
+                        <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                        />
+                        <button onClick={handleAddComment}>Add Comment</button>
                         </div>
-                    ))}
-                    <textarea
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <button onClick={handleAddComment}>Add Comment</button>
-                </div>
-            )}
+                    </div>
+                )}
+            
         </div>
+
     );
 };
 

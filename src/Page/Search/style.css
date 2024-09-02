@@ -1,0 +1,118 @@
+.search{
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 5%;
+}
+.search_form{
+    width: 100%;
+}
+.search_body{
+  width: 90%;
+  margin: 0 auto;
+}
+.search_ls{
+  margin-top: 50px;
+}
+.search_info{
+  width: 70%;
+  margin-left: 20px;
+  margin-top: -10px;
+}
+/* .search_form input{
+    width:90%;
+} */
+/* From Uiverse.io by joe-watson-sbf */ 
+.search_form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.search__input {
+  margin: 0 auto;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border: none;
+  color: #646464;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 100%;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
+}
+
+.search__input:hover, .search__input:focus {
+  box-shadow: 0 0 1em #00000013;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.search__input:focus + .search__button {
+  background-color: #f0eeee;
+}
+
+.search__button {
+  width: 30px;
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: .1em;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #b4b4b4;
+}
+.img_layout{
+ width: 30%;
+ /* background-color: #646464; */
+}
+.search_img{
+  display: flex;
+  width: 100%;
+  background-color: #ffff;
+  align-items: center;
+  justify-content: space-around;
+  margin-right: 50px;
+  border-radius: 20px;
+
+}
+.search_avatar {
+  width: 70px;  /* Chiều rộng của hình tròn */
+  height: 70px; /* Chiều cao của hình tròn */
+  border-radius: 100%; /* Làm cho hình ảnh thành hình tròn */
+  overflow: hidden; /* Ẩn phần hình ảnh ngoài khu vực hình tròn */
+  background-color: bisque;
+  margin-left: 20px;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+.search_avatar link{
+  margin-top: 500px;
+}
+.search_avatar img{
+  /* border-radius: 50%; */
+  width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng của khung */
+  height: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều cao của khung */
+  object-fit: cover; /* Đảm bảo hình ảnh không bị biến dạng */
+  /* margin-right: 100px; */
+
+}
+.link_profile{
+  margin-bottom: 30px;
+}

@@ -7,6 +7,9 @@ import Profile from "../Profile/Profile"
 import React, { useState, useEffect } from 'react';
 import SearchPage from "../Search/Search";
 import { Link, useNavigate } from 'react-router-dom';
+import "../Home/style.css"
+import NavrightComponent from "../../pages/users/theme/NavRight/navright";
+import Navleft from "../../pages/users/theme/NavLeft/navleft";
 const Home = () =>{
     const UserId = localStorage.getItem('UserId');
     const [posts, setPosts] = useState([]);
@@ -45,15 +48,24 @@ const Home = () =>{
     //     }
     // };
     return (
-        <div>
-            <h1>Xin chào</h1>
+        <div className="body">
+            <div className="Navright"><NavrightComponent/></div>
+            <div className="children">
+                {/* <Notifications/> */}
+            {/* <h1>Xin chào</h1> */}
+            {/* <div className = "post"> 
             <CreatePost onPostCreated={handlePostCreated} posts={posts} />
-            <SearchPage />
+            </div> */}
+          
+              {/* <div className="search"><SearchPage /></div> */}
             <PostFeed posts={posts} onPostDeleted={handlePostDeleted} /> 
              {/* <Notifications /> */}
-        <Link to={`/user/${UserId}`}>
+        {/* <Link to={`/user/${UserId}`}>
           
-            <button >Profile</button>  </Link>
+            <button >Profile</button>  </Link> */}
+            {/* <Profile/> */}
+            </div>
+            <div className="Navleft"><Navleft/></div>
         </div>
     );
 };
